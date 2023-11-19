@@ -9,7 +9,11 @@ function setup() {
 }
 
 function draw() {
-	background(240);
+	background(50);
 	drawFrame(size, size);
 	debug();
+}
+
+const testfunc = () => {
+	console.log("note");
 }
