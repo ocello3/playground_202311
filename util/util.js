@@ -45,15 +45,29 @@ const getLogList = (obj, length, start) => {
 	return logList;
 }
 
+/**
+ * display layered object/array at "debug" dom
+ * @param {object} target object to display 
+ * @param {number} array length to display 
+ * @param {number} start position of array to display
+ */
 const debug = (obj, length=null, start=0) => {
 	const title = '// debug result<br>';
 	const logList = getLogList(obj, length, start);
 	document.getElementById('debug').innerHTML = title.concat(...logList);
 }
 
-// others
-// const getSize = (w, h) => w > h ? h : w;
+/** 
+ * get square size from widowWidth and windowHeight
+ * @return {number} square size
+*/
 const getSize = () => windowWidth > windowHeight ? windowHeight : windowWidth;
+
+/**
+ * draw frame
+ * @param {d} window width
+ * @param {*} window height
+ */
 const drawFrame = (w, h) => {
 	push();
 	noFill();
