@@ -68,3 +68,13 @@ const drawFrame = (w, h) => {
 	rect(0, 0, w, h);
 	pop();
 }
+
+/**
+ * surround argument function by push() and pop() for drawing
+ * @param {*} func 
+ */
+const pp = (func) => {
+	push();
+	func();
+	pop();
+}

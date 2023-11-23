@@ -1,5 +1,5 @@
 let size;
-let mp3, sample;
+let mp3;
 
 function preload() {
 	mp3 = {
@@ -24,6 +24,13 @@ function setup() {
 function draw() {
 	background(240);
 	drawFrame(size, size);
+	// out frame
+	pp(() => {
+		rectMode(CENTER);
+		rect(size * 0.5, size * 0.5, size * 0.8, size * 0.5, 10);
+	});
+	// reel
+	// debug for key-input
 	text(keyCode, size/2, size/2);
 	debug();
 }
