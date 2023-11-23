@@ -14,8 +14,7 @@ function preload() {
 
 function setup() {
 	size = getSize();
-	const canvas = createCanvas(size, size);
-	canvas.parent('canvas');
+	createCanvas(size, size).parent('canvas');
 	pg = {
 		outer: createGraphics(size, size),
 		reel: createGraphics(size, size),

@@ -36,7 +36,7 @@ const debug = (obj, length = null, start = 0) => {
 		});
 		return logList;
 	}
-	const title = isLooping() ? 'drawing<br>' : '...waiting<br>';
+	const title = isLooping() ? 'drawing<br>' : '...waiting/click canvas to start<br>';
 	const logList = [];
 	if (Array.isArray(obj)) {
 		const arrayObjLogList = getArrayObjLogList(obj, null, length, start);
