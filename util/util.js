@@ -1,38 +1,42 @@
-// debug
-const getArrayObjLogList = (obj, name=null, length, start) => {
-	const logList = [];
-	const arrayObj = (name === null)? obj: obj[name];
-	const limitedStart = (start < arrayObj.length)? start: arrayObj.length - 1;
-	const calcLimitedLength = () => {
-		const lastId = limitedStart + length;
-		const isOver = (lastId > arrayObj.length);
-		return (isOver)? arrayObj.length - limitedStart: length;
-	}
-	const limitedLength = (length === null)? arrayObj.length: calcLimitedLength();
-	const limitedObjArray = arrayObj.slice(limitedStart, limitedStart + limitedLength);
-	limitedObjArray.forEach((innerObj, index) => {
-		const innerObjLog = `- index: ${index + limitedStart} -<br>`;
-		const innerObjLogList = getObjLogList(innerObj, length, start);
-		logList.push(innerObjLog.concat(...innerObjLogList));
-	});
-	return logList;
-}
-
-const getObjLogList = (obj, length, start) => {
-	const logList = [];
-	for (const name in obj) {
-		if (Array.isArray(obj[name])) {
-			logList.push(`** ${name}: **<br>`); 
-			const arrayObjLogList = getArrayObjLogList(obj, name, length, start)
-			logList.push(...arrayObjLogList);
-		} else {
-			logList.push(`${name}: ${obj[name]}<br>`);
+/**
+ * display debug information to DOM of id=debug
+ * @param {*} obj 
+ * @param {number} length 
+ * @param {number} start 
+ */
+const debug = (obj, length = null, start = 0) => {
+	const getObjLogList = (_obj, _length, _start) => {
+		const logList = [];
+		for (const name in _obj) {
+			if (Array.isArray(_obj[name])) {
+				logList.push(`** ${name}: **<br>`);
+				const arrayObjLogList = getArrayObjLogList(_obj, name, _length, _start);
+				logList.push(...arrayObjLogList);
+			} else {
+				logList.push(`${name}: ${_obj[name]}<br>`);
+			}
 		}
+		return logList;
 	}
-	return logList;
-}
-
-const getLogList = (obj, length, start) => {
+	const getArrayObjLogList = (_obj, name = null, _length, _start) => {
+		const logList = [];
+		const arrayObj = (name === null) ? _obj : _obj[name];
+		const limitedStart = (_start < arrayObj._length) ? _start : arrayObj._length - 1;
+		const calcLimitedLength = () => {
+			const lastId = limitedStart + _length;
+			const isOver = (lastId > arrayObj._length);
+			return (isOver) ? arrayObj._length - limitedStart : _length;
+		}
+		const limitedLength = (_length === null) ? arrayObj._length : calcLimitedLength();
+		const limitedObjArray = arrayObj.slice(limitedStart, limitedStart + limitedLength);
+		limitedObjArray.forEach((innerObj, index) => {
+			const innerObjLog = `- index: ${index + limitedStart} -<br>`;
+			const innerObjLogList = getObjLogList(innerObj, _length, _start);
+			logList.push(innerObjLog.concat(...innerObjLogList));
+		});
+		return logList;
+	}
+	const title = '// debug result<br>';
 	const logList = [];
 	if (Array.isArray(obj)) {
 		const arrayObjLogList = getArrayObjLogList(obj, null, length, start);
@@ -42,18 +46,6 @@ const getLogList = (obj, length, start) => {
 		const objLogList = getObjLogList(obj, length, start);
 		logList.push(...objLogList);
 	}
-	return logList;
-}
-
-/**
- * display layered object/array at "debug" dom
- * @param {object} target object to display 
- * @param {number} array length to display 
- * @param {number} start position of array to display
- */
-const debug = (obj, length=null, start=0) => {
-	const title = '// debug result<br>';
-	const logList = getLogList(obj, length, start);
 	document.getElementById('debug').innerHTML = title.concat(...logList);
 }
 
@@ -65,8 +57,8 @@ const getSize = () => windowWidth > windowHeight ? windowHeight : windowWidth;
 
 /**
  * draw frame
- * @param {d} window width
- * @param {*} window height
+ * @param {number} window width
+ * @param {number} window height
  */
 const drawFrame = (w, h) => {
 	push();

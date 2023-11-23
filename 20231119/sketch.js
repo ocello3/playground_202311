@@ -1,5 +1,5 @@
 let size;
-let mp3;
+let mp3, sample;
 
 function preload() {
 	mp3 = {
