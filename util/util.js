@@ -72,9 +72,16 @@ const drawFrame = (w, h) => {
 /**
  * surround argument function by push() and pop() for drawing
  * @param {*} func 
+ * @param {*} pg 
  */
-const pp = (func) => {
-	push();
-	func();
-	pop();
+const pp = (func, pg = undefined) => {
+	if (pg === undefined) {
+		push();
+		func();
+		pop();
+	} else {
+		pg.push();
+		func();
+		pg.pop();
+	}
 }
