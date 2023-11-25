@@ -1,3 +1,13 @@
+function mouseClicked() {
+	userStartAudio();
+	loop();
+}
+
+function touchStarted() {
+	userStartAudio();
+	loop();
+}
+
 /**
  * display debug information to DOM of id=debug
  * @param {*} obj 
