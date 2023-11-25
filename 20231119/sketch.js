@@ -19,23 +19,24 @@ function setup() {
 		const outer = {};
 		outer.size = createVector(size * 0.7, size * 0.4);
 		outer.margin = (() => {
-			const margin = createVector((size - outer.size.x) * 0.5, (size - outer.size.y) * 0.5);
-			const step = p5.Vector.mult(margin, 0.2 * i);
-			return p5.Vector.add(margin, step);
+			const step = createVector((size - outer.size.x) / (2 + 4 - 1), (size - outer.size.y) / (2 + 4 - 1));
+			return p5.Vector.mult(step, i + 1);
 		})();
 		return outer;
 	});
-	dt.reels = dt.outer.map(() => [...Array(2)].map((_, j) => {
-		const reel = {};
-		reel.mid = (() => {
-			const xdir = j === 0 ? -1 : 1;
-			const steprate = [0.5 + 0.3 * xdir, 0.3];
-			return p5.Vector.mult(dt.outer[0].size, steprate);
-		})();
-		reel.angle = 0;
-		reel.radius = size * 0.1;
-		return reel;
-	}));
+	dt.reels = dt.outer.map((outer, i) => {
+		return [...Array(2)].map((_, j) => {
+			const reel = {};
+			reel.mid = (() => {
+				const xdir = j === 0 ? -1 : 1;
+				const steprate = [0.5 + 0.27 * xdir, 0.4];
+				return p5.Vector.mult(dt.outer[0].size, steprate);
+			})();
+			reel.angle = 0;
+			reel.radius = outer.size.x * 0.17;
+			return reel;
+		});
+	});
 	// frameRate();
 	noLoop();
 }
@@ -43,7 +44,9 @@ function setup() {
 function draw() {
 	dt.outer = dt.outer.map((pre, i) => {
 		pp(() => { // out frame
-			pg.outer[i].fill("blue");
+			pg.outer[i].noFill();
+			pg.outer[i].strokeWeight(size * 0.005);
+			pg.outer[i].stroke(0, 255 / (i * 0.5 + 1));
 			pg.outer[i].rect(pre.margin.x, pre.margin.y, pre.size.x, pre.size.y, 10);
 		});
 		return pre;
@@ -54,11 +57,14 @@ function draw() {
 		pp(() => {
 			//pg.reels.fill("red");
 			pg.reels[i].translate(dt.outer[i].margin.x, dt.outer[i].margin.y); // translate globally to corner of outer
+			pg.reels[i].noFill();
+			pg.reels[i].strokeWeight(size * 0.005);
+			pg.reels[i].stroke(0, 255 / (i * 0.5 + 1));
 			pg.reels[i].circle(pre.mid.x, pre.mid.y, pre.radius);
 		}, pg.reels[i]);
 		return nxt;
 	}));
-	background(240);
+	background(255);
 	drawFrame(size, size);
 	pg.outer.forEach(outerpg => image(outerpg, 0, 0));
 	pg.reels.forEach(reelspg => image(reelspg, 0, 0));

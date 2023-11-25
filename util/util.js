@@ -46,7 +46,13 @@ const debug = (obj, length = null, start = 0) => {
 		});
 		return logList;
 	}
-	const title = isLooping() ? 'drawing<br>' : '...waiting/click canvas to start<br>';
+	const frameRateWarning = (() => {
+		if (frameRate() > 50) return "more than 50";
+		if (frameRate() > 40) return "less than 50";
+		if (frameRate() > 30) return "less than 40";
+		return "less than 30";
+	})();
+	const title = isLooping() ? `drawing/ frameRate: ${frameRateWarning}<br>` : '...waiting/click canvas to start<br>';
 	const logList = [];
 	if (Array.isArray(obj)) {
 		const arrayObjLogList = getArrayObjLogList(obj, null, length, start);
