@@ -17,17 +17,16 @@ function setup() {
 	pg.reels = createGraphics(size, size);
 	dt.outer = [...Array(1)].map(() => {
 		const outer = {};
-		outer.mid = createVector(size * 0.5, size * 0.5);
 		outer.size = createVector(size * 0.8, size * 0.5);
+		outer.margin = createVector((size - outer.size.x) * 0.5, (size - outer.size.y) * 0.5);
 		return outer;
 	});
 	dt.reels = [...Array(2)].map((_, i) => {
 		const reels = {};
 		reels.mid = (() => {
 			const xdir = i === 0 ? -1 : 1;
-			const x = size * (0.5 + 0.3 * xdir);
-			const y = size * 0.3;
-			return createVector(x, y);
+			const rate = [0.5 + 0.3 * xdir, 0.3];
+			return p5.Vector.mult(dt.outer[0].size, rate);
 		})();
 		reels.angle = 0;
 		reels.radius = size * 0.1;
@@ -41,8 +40,7 @@ function draw() {
 	dt.outer = dt.outer.map(pre => {
 		pp(() => { // out frame
 			pg.outer.fill("blue");
-			pg.outer.rectMode(CENTER);
-			pg.outer.rect(pre.mid.x, pre.mid.y, pre.size.x, pre.size.y, 10);
+			pg.outer.rect(pre.margin.x, pre.margin.y, pre.size.x, pre.size.y, 10);
 		});
 		return pre;
 	});
@@ -51,6 +49,7 @@ function draw() {
 		nxt.angle = pre.angle + 1; // replace 1 to rotate speed
 		pp(() => {
 			//pg.reels.fill("red");
+			pg.reels.translate(outer[0].margin.x, outer[0].margin.y); // translate globally to corner of outer
 			pg.reels.circle(pre.mid.x, pre.mid.y, pre.radius);
 		}, pg.reels);
 		return nxt;
