@@ -1,3 +1,4 @@
+let isInit = true;
 let size={}, mp3={}, pg={}, dt={};
 
 function preload() {
@@ -15,52 +16,72 @@ function setup() {
 	createCanvas(size, size).parent('canvas');
 	pg.outer = [...Array(4)].map(() => createGraphics(size, size));
 	pg.reels = [...Array(4)].map(() => createGraphics(size, size));
-	dt.outer = [...Array(4)].map((_, i) => {
-		const outer = {};
-		outer.size = createVector(size * 0.7, size * 0.4);
-		outer.margin = (() => {
-			const step = createVector((size - outer.size.x) / (2 + 4 - 1), (size - outer.size.y) / (2 + 4 - 1));
-			return p5.Vector.mult(step, i + 1);
-		})();
-		return outer;
-	});
-	dt.reels = dt.outer.map((outer, i) => {
-		return [...Array(2)].map((_, j) => {
-			const reel = {};
-			reel.mid = (() => {
-				const xdir = j === 0 ? -1 : 1;
-				const steprate = [0.5 + 0.27 * xdir, 0.4];
-				return p5.Vector.mult(dt.outer[0].size, steprate);
-			})();
-			reel.angle = 0;
-			reel.radius = outer.size.x * 0.17;
-			return reel;
-		});
-	});
+	dt.outer = [...Array(4)].map(() => {});
+	dt.reels = [...Array(4)].map(() => [...Array(2)].map(() => {}));
 	// frameRate();
 	noLoop();
 }
 
 function draw() {
 	dt.outer = dt.outer.map((pre, i) => {
+		const nxt = { ...pre };
+		nxt.size = (() => {
+			if (isInit) {
+				return createVector(size * 0.7, size * 0.4);
+			} else {
+				return pre.size;
+			}
+		})();
+		nxt.margin = (() => {
+			if (isInit) {
+				const marginNum = 2 + 4 - 1;
+				const marginTotal = p5.Vector.sub(createVector(size, size), nxt.size);
+				const step = p5.Vector.div(marginTotal, marginNum);
+				return p5.Vector.mult(step, i + 1);
+			} else {
+				return pre.margin;
+			}
+		})();
 		pp(() => { // out frame
 			pg.outer[i].noFill();
 			pg.outer[i].strokeWeight(size * 0.005);
 			pg.outer[i].stroke(0, 255 / (i * 0.5 + 1));
-			pg.outer[i].rect(pre.margin.x, pre.margin.y, pre.size.x, pre.size.y, 10);
+			pg.outer[i].rect(nxt.margin.x, nxt.margin.y, nxt.size.x, nxt.size.y, 10);
 		});
-		return pre;
+		return nxt;
 	});
 	dt.reels = dt.reels.map((pres, i) => pres.map((pre, j) => {
 		const nxt = {...pre};
-		nxt.angle = pre.angle + 1; // replace 1 to rotate speed
+		nxt.mid = (() => {
+			if (isInit) {
+				const xdir = j === 0 ? -1 : 1;
+				const steprate = [0.5 + 0.27 * xdir, 0.4];
+				return p5.Vector.mult(dt.outer[0].size, steprate);
+			} else {
+				return pre.mid;
+			}
+		})();
+		nxt.angle = (() => {
+			if (isInit) {
+				return 0;
+			} else {
+				return pre.angle + 1; // replace 1 to rotate speed
+			}
+		})();
+		nxt.radius = (() => {
+			if (isInit) {
+				return dt.outer[i].size.x * 0.17;
+			} else {
+				return pre.radius;
+			}
+		})();
 		pp(() => {
 			//pg.reels.fill("red");
 			pg.reels[i].translate(dt.outer[i].margin.x, dt.outer[i].margin.y); // translate globally to corner of outer
 			pg.reels[i].noFill();
 			pg.reels[i].strokeWeight(size * 0.005);
 			pg.reels[i].stroke(0, 255 / (i * 0.5 + 1));
-			pg.reels[i].circle(pre.mid.x, pre.mid.y, pre.radius);
+			pg.reels[i].circle(nxt.mid.x, nxt.mid.y, nxt.radius);
 		}, pg.reels[i]);
 		return nxt;
 	}));
@@ -71,6 +92,7 @@ function draw() {
 	// debug
 	text(keyCode, size/2, size/2);
 	debug();
+	if (isInit) isInit = false;
 }
 
 function keyPressed() {
