@@ -35,19 +35,21 @@ function draw() {
 		nxt.margin = (() => {
 			if (isInit) {
 				const marginNum = 2 + 4 - 1;
-				const marginTotal = p5.Vector.sub(createVector(size, size), nxt.size);
+				const windowSize = createVector(size, size)
+				const marginTotal = p5.Vector.sub(windowSize, nxt.size);
 				const step = p5.Vector.div(marginTotal, marginNum);
 				return p5.Vector.mult(step, i + 1);
 			} else {
 				return pre.margin;
 			}
 		})();
-		pp(() => { // out frame
+		pp(() => {
 			pg.outer[i].noFill();
 			pg.outer[i].strokeWeight(size * 0.005);
 			pg.outer[i].stroke(0, 255 / (i * 0.5 + 1));
-			pg.outer[i].rect(nxt.margin.x, nxt.margin.y, nxt.size.x, nxt.size.y, 10);
-		});
+			pg.outer[i].translate(nxt.margin);
+			pg.outer[i].rect(0, 0, nxt.size.x, nxt.size.y, 10);
+		}, pg.outer[i]);
 		return nxt;
 	});
 	dt.reels = dt.reels.map((pres, i) => pres.map((pre, j) => {
@@ -77,7 +79,7 @@ function draw() {
 		})();
 		pp(() => {
 			//pg.reels.fill("red");
-			pg.reels[i].translate(dt.outer[i].margin.x, dt.outer[i].margin.y); // translate globally to corner of outer
+			pg.reels[i].translate(dt.outer[i].margin);
 			pg.reels[i].noFill();
 			pg.reels[i].strokeWeight(size * 0.005);
 			pg.reels[i].stroke(0, 255 / (i * 0.5 + 1));
