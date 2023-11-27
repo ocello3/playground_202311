@@ -77,9 +77,28 @@ function draw() {
 				return wheelPre.radius;
 			}
 		})();
+		wheel.gears = (() => {
+			const length = wheel.radius * 0.3;
+			const num = 6;
+			const interval = 2 * PI / num;
+			if (isInit) {
+				return [...Array(num)].map((_, k) => {
+					const gear = {};
+					const unit = p5.Vector.fromAngle(interval * k + wheel.angle);
+					gear.start = p5.Vector.add(wheel.mid, p5.Vector.mult(unit, wheel.radius - length));
+					gear.end = p5.Vector.add(wheel.mid, p5.Vector.mult(unit, wheel.radius));
+					return gear;
+				})
+			} else {
+				return wheelPre.gears; // need to rotate
+			}
+		})();
 		pp(() => {
 			//pg.reels.fill("red");
 			pg.reels[i].translate(dt.outers[i].margin);
+			wheel.gears.forEach(gear => pp(() => {
+				pg.reels[i].line(gear.start.x, gear.start.y, gear.end.x, gear.end.y);
+			}));
 			pg.reels[i].noFill();
 			pg.reels[i].strokeWeight(size * 0.005);
 			pg.reels[i].stroke(0, 255 / (i * 0.5 + 1));

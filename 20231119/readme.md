@@ -13,7 +13,7 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - レイヤーごとにp5.Graphicsを生成して、フレームごとにimage() → clear()する。
 
 # 待ち
-- 歯車書く
+- 歯車書く。始点と終点、本数、長さ、間隔角度に回転角度。
 - 歯車回す
 - 巻かれたテープを書く
 - テープの支点を書く
