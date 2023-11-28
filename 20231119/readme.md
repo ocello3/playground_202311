@@ -13,6 +13,7 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - レイヤーごとにp5.Graphicsを生成して、フレームごとにimage() → clear()する。
 
 # 待ち
+- debugで配列が表示されない
 - 歯車書く。始点と終点、本数、長さ、間隔角度に回転角度。
 - 歯車回す
 - 巻かれたテープを書く
@@ -22,3 +23,5 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 	- オブジェクトplayers = player * 4トラック。status(再生開始 → 再生中 → 再生終わり=逆再生開始 → 逆再生中 → 逆再生終わり、→ 待機中)
 	- 待機中から再生開始となるトリガー: '再生終わり'のstatusになると、他の3つのトラックでstatusが待機中のトラックからランダムに選ぶ。
 - 音源を再生する。
+
+# メモ

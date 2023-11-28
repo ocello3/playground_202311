@@ -70,23 +70,24 @@ function draw() {
 				return wheelPre.angle + 1; // replace 1 to rotate speed
 			}
 		})();
-		wheel.radius = (() => {
+		wheel.diameter = (() => {
 			if (isInit) {
 				return dt.outers[i].size.x * 0.17;
 			} else {
-				return wheelPre.radius;
+				return wheelPre.diameter;
 			}
 		})();
 		wheel.gears = (() => {
-			const length = wheel.radius * 0.3;
+			const radius = wheel.diameter * 0.5;
+			const length = radius * 0.3;
 			const num = 6;
 			const interval = 2 * PI / num;
 			if (isInit) {
 				return [...Array(num)].map((_, k) => {
 					const gear = {};
 					const unit = p5.Vector.fromAngle(interval * k + wheel.angle);
-					gear.start = p5.Vector.add(wheel.mid, p5.Vector.mult(unit, wheel.radius - length));
-					gear.end = p5.Vector.add(wheel.mid, p5.Vector.mult(unit, wheel.radius));
+					gear.start = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius - length));
+					gear.end = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius));
 					return gear;
 				})
 			} else {
@@ -96,13 +97,11 @@ function draw() {
 		pp(() => {
 			//pg.reels.fill("red");
 			pg.reels[i].translate(dt.outers[i].margin);
-			wheel.gears.forEach(gear => pp(() => {
-				pg.reels[i].line(gear.start.x, gear.start.y, gear.end.x, gear.end.y);
-			}));
-			pg.reels[i].noFill();
 			pg.reels[i].strokeWeight(size * 0.005);
+			pg.reels[i].noFill();
 			pg.reels[i].stroke(0, 255 / (i * 0.5 + 1));
-			pg.reels[i].circle(wheel.mid.x, wheel.mid.y, wheel.radius);
+			wheel.gears.forEach(gear => pg.reels[i].line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
+			pg.reels[i].circle(wheel.mid.x, wheel.mid.y, wheel.diameter);
 		}, pg.reels[i]);
 		return wheel;
 	}));
@@ -118,7 +117,7 @@ function draw() {
 	});
 	// debug
 	text(keyCode, size/2, size/2);
-	debug();
+	debug(dt.reels[0][0].gears);
 	if (isInit) isInit = false;
 }
 
