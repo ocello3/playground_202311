@@ -89,9 +89,15 @@ function draw() {
 					gear.start = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius - length));
 					gear.end = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius));
 					return gear;
-				})
+				});
 			} else {
-				return wheelPre.gears; // need to rotate
+				return wheelPre.gears.map((_, k) => {
+					const gear = {};
+					const unit = p5.Vector.fromAngle(interval * k + wheel.angle);
+					gear.start = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius - length));
+					gear.end = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius));
+					return gear;
+				});
 			}
 		})();
 		pp(() => {
