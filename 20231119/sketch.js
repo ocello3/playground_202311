@@ -96,7 +96,7 @@ function draw() {
 					const unit = p5.Vector.fromAngle(interval * k + wheel.angle);
 					gear.start = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius - length));
 					gear.end = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius));
-					return gear;
+					return gear; // improve?
 				});
 			}
 		})();
