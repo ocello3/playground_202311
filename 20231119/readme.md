@@ -13,9 +13,9 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - レイヤーごとにp5.Graphicsを生成して、フレームごとにimage() → clear()する。
 - 歯車書く。始点と終点、本数、長さ、間隔角度に回転角度。
 - 歯車回す（回転した角度と前フレームの座標から計算できる？）
+- debugのbugをdebug
 
 # 待ち
-- debugで配列が表示されない
 - 巻かれたテープを書く
 - テープの支点を書く
 - テープ書く
