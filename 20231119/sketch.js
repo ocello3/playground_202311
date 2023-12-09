@@ -22,20 +22,13 @@ function setup() {
 			return tape;
 		}),
 	}
-	dt = {
-		tapes: [...Array(4)].map(() => {
-			const tape = {};
-			tape.outer = {};
-			tape.reels = [...Array(2)].map(() => { });
-			return tape;
-		}),
-	}
 	// frameRate();
 	noLoop();
 }
 
 function draw() {
-	dt.tapes = dt.tapes.map((_tape, i) => {
+	const _tapes = isInit ? [...Array(4)] : dt.tapes;
+	dt.tapes = _tapes.map((_tape, i) => {
 		const tape = {};
 		tape.outer = (() => {
 			const outer = {};
@@ -66,7 +59,8 @@ function draw() {
 			}, pg.tapes[i].outer);
 			return outer;
 		})();
-		tape.reels = _tape.reels.map((_wheel, j) => {
+		const _reels = isInit ? [...Array(2)] : _tape.reels;
+		tape.reels = _reels.map((_wheel, j) => {
 			const wheel = {};
 			wheel.mid = (() => {
 				if (isInit) {
