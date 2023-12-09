@@ -159,6 +159,14 @@ function draw() {
 					return _anchor.contact;
 				}
 			})();
+			anchor.bottom = (() => {
+				if (isInit) {
+					const diff = p5.Vector.fromAngle(PI * 0.5, anchor.diameter * 0.5);
+					return p5.Vector.add(anchor.mid, diff);
+				} else {
+					return _anchor.bottom;
+				}
+			})();
 			pp(() => {
 				pg.tapes[i].anchors.translate(tape.outer.margin);
 				pg.tapes[i].anchors.circle(anchor.mid.x, anchor.mid.y, anchor.diameter);
@@ -172,7 +180,7 @@ function draw() {
 				tape.reels.forEach((reel, j) => {
 					pg.tapes[i].line.line(reel.contact.x, reel.contact.y, tape.anchors[j].contact.x, tape.anchors[j].contact.y);
 				});
-				pg.tapes[i].line.line(tape.anchors[0].contact.x, tape.anchors[0].contact.y, tape.anchors[1].contact.x, tape.anchors[1].contact.y);
+				pg.tapes[i].line.line(tape.anchors[0].bottom.x, tape.anchors[0].bottom.y, tape.anchors[1].bottom.x, tape.anchors[1].bottom.y);
 			}, pg.tapes[i].line);
 			return line;
 		})();
