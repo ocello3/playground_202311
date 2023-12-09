@@ -96,23 +96,14 @@ function draw() {
 				const length = radius * 0.3;
 				const num = 6;
 				const interval = 2 * PI / num;
-				if (isInit) {
-					return [...Array(num)].map((_, k) => {
-						const gear = {};
-						const unit = p5.Vector.fromAngle(interval * k + wheel.angle);
-						gear.start = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius - length));
-						gear.end = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius));
-						return gear;
-					});
-				} else {
-					return _wheel.gears.map((_, k) => {
-						const gear = {};
-						const unit = p5.Vector.fromAngle(interval * k + wheel.angle);
-						gear.start = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius - length));
-						gear.end = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius));
-						return gear; // improve?
-					});
-				}
+				const pre = isInit ? [...Array(num)] : _wheel.gears;
+				return pre.map((_, k) => {
+					const gear = {};
+					const unit = p5.Vector.fromAngle(interval * k + wheel.angle);
+					gear.start = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius - length));
+					gear.end = p5.Vector.add(wheel.mid, p5.Vector.setMag(unit, radius));
+					return gear; // improve?
+				});
 			})();
 			pp(() => {
 				//pg.reels.fill("red");
