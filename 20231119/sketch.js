@@ -53,11 +53,12 @@ function draw() {
 				}
 			})();
 			pp(() => {
-				pg.tapes[i].outer.noFill();
-				pg.tapes[i].outer.strokeWeight(size * 0.005);
-				pg.tapes[i].outer.stroke(0, 255 / (i * 0.5 + 1));
-				pg.tapes[i].outer.translate(outer.margin);
-				pg.tapes[i].outer.rect(0, 0, outer.size.x, outer.size.y, 10);
+				const _pg = pg.tapes[i].outer;
+				_pg.noFill();
+				_pg.strokeWeight(size * 0.005);
+				_pg.stroke(0, 255 / (i * 0.5 + 1));
+				_pg.translate(outer.margin);
+				_pg.rect(0, 0, outer.size.x, outer.size.y, 10);
 			}, pg.tapes[i].outer);
 			return outer;
 		})();
@@ -89,12 +90,12 @@ function draw() {
 			})();
 			reel.contact = (() => {
 				if (isInit) {
-					const rotate = 0.05 * PI;
+					const angle = 0.05 * PI;
 					if (j === 0) { // left
-						const diff = p5.Vector.fromAngle(PI - rotate, reel.diameter * 0.5);
+						const diff = p5.Vector.fromAngle(PI - angle, reel.diameter * 0.5);
 						return p5.Vector.add(reel.mid, diff);
 					} else { // right
-						const diff = p5.Vector.fromAngle(rotate, reel.diameter * 0.5);
+						const diff = p5.Vector.fromAngle(angle, reel.diameter * 0.5);
 						return p5.Vector.add(reel.mid, diff);
 					}
 				} else {
@@ -116,13 +117,14 @@ function draw() {
 				});
 			})();
 			pp(() => {
+				const _pg = pg.tapes[i].reels;
 				//pg.reels.fill("red");
-				pg.tapes[i].reels.translate(tape.outer.margin);
-				pg.tapes[i].reels.strokeWeight(size * 0.005);
-				pg.tapes[i].reels.noFill();
-				pg.tapes[i].reels.stroke(0, 255 / (i * 0.5 + 1));
-				reel.gears.forEach(gear => pg.tapes[i].reels.line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
-				pg.tapes[i].reels.circle(reel.mid.x, reel.mid.y, reel.diameter);
+				_pg.translate(tape.outer.margin);
+				_pg.strokeWeight(size * 0.005);
+				_pg.noFill();
+				_pg.stroke(0, 255 / (i * 0.5 + 1));
+				reel.gears.forEach(gear => _pg.line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
+				_pg.circle(reel.mid.x, reel.mid.y, reel.diameter);
 			}, pg.tapes[i].reels);
 			return reel;
 		});
@@ -168,19 +170,21 @@ function draw() {
 				}
 			})();
 			pp(() => {
-				pg.tapes[i].anchors.translate(tape.outer.margin);
-				pg.tapes[i].anchors.circle(anchor.mid.x, anchor.mid.y, anchor.diameter);
+				const _pg = pg.tapes[i].anchors;
+				_pg.translate(tape.outer.margin);
+				_pg.circle(anchor.mid.x, anchor.mid.y, anchor.diameter);
 			}, pg.tapes[i].anchors)
 			return anchor;
 		});
 		tape.line = (() => {
 			const line = {};
 			pp(() => {
-				pg.tapes[i].line.translate(tape.outer.margin);
+				const _pg = pg.tapes[i].line;
+				_pg.translate(tape.outer.margin);
 				tape.reels.forEach((reel, j) => {
-					pg.tapes[i].line.line(reel.contact.x, reel.contact.y, tape.anchors[j].contact.x, tape.anchors[j].contact.y);
+					_pg.line(reel.contact.x, reel.contact.y, tape.anchors[j].contact.x, tape.anchors[j].contact.y);
 				});
-				pg.tapes[i].line.line(tape.anchors[0].bottom.x, tape.anchors[0].bottom.y, tape.anchors[1].bottom.x, tape.anchors[1].bottom.y);
+				_pg.line(tape.anchors[0].bottom.x, tape.anchors[0].bottom.y, tape.anchors[1].bottom.x, tape.anchors[1].bottom.y);
 			}, pg.tapes[i].line);
 			return line;
 		})();

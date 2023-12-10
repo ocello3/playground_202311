@@ -18,6 +18,7 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - テープ書く
 
 # 待ち
+- pgを分割代入で簡略化する
 - 巻かれたテープを書く
 - reel.contactの位置に巻かれたテープの厚みを反映する
 - 再生をコントロールする仕組みを考える。
