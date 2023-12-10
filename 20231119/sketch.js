@@ -88,6 +88,10 @@ function draw() {
 					return _reel.diameter;
 				}
 			})();
+			reel.outer = (() => {
+				const max = tape.outer.size.x * 0.07;
+
+			})();
 			reel.contact = (() => {
 				if (isInit) {
 					const angle = 0.05 * PI;
