@@ -15,13 +15,13 @@ function setup() {
 	size = getSize();
 	createCanvas(size, size).parent('canvas');
 	pg = {
-		tapes: [...Array(4)].map(() => {
-			const tape = {};
-			tape.outer = createGraphics(size, size);
-			tape.reels = createGraphics(size, size);
-			tape.anchors = createGraphics(size, size);
-			tape.line = createGraphics(size, size);
-			return tape;
+		players: [...Array(4)].map(() => {
+			const player = {};
+			player.outer = createGraphics(size, size);
+			player.reels = createGraphics(size, size);
+			player.anchors = createGraphics(size, size);
+			player.tape = createGraphics(size, size);
+			return player;
 		}),
 	}
 	// frameRate();
@@ -29,16 +29,16 @@ function setup() {
 }
 
 function draw() {
-	const _tapes = isInit ? [...Array(4)] : dt.tapes;
-	dt.tapes = _tapes.map((_tape, i) => {
-		const tape = {};
-		tape.outer = (() => {
+	const _players = isInit ? [...Array(4)] : dt.players;
+	dt.players = _players.map((_player, i) => {
+		const player = {};
+		player.outer = (() => {
 			const outer = {};
 			outer.size = (() => {
 				if (isInit) {
 					return createVector(size * 0.7, size * 0.4);
 				} else {
-					return _tape.outer.size;
+					return _player.outer.size;
 				}
 			})();
 			outer.margin = (() => {
@@ -49,27 +49,27 @@ function draw() {
 					const step = p5.Vector.div(marginTotal, marginNum);
 					return p5.Vector.mult(step, i + 1);
 				} else {
-					return _tape.outer.margin;
+					return _player.outer.margin;
 				}
 			})();
 			pp(() => {
-				const _pg = pg.tapes[i].outer;
+				const _pg = pg.players[i].outer;
 				_pg.noFill();
 				_pg.strokeWeight(size * 0.005);
 				_pg.stroke(0, 255 / (i * 0.5 + 1));
 				_pg.translate(outer.margin);
 				_pg.rect(0, 0, outer.size.x, outer.size.y, 10);
-			}, pg.tapes[i].outer);
+			}, pg.players[i].outer);
 			return outer;
 		})();
-		const _reels = isInit ? [...Array(2)] : _tape.reels;
-		tape.reels = _reels.map((_reel, j) => {
+		const _reels = isInit ? [...Array(2)] : _player.reels;
+		player.reels = _reels.map((_reel, j) => {
 			const reel = {};
 			reel.mid = (() => {
 				if (isInit) {
 					const xdir = j === 0 ? -1 : 1; // left or right
 					const steprate = [0.5 + 0.27 * xdir, 0.4];
-					return p5.Vector.mult(tape.outer.size, steprate);
+					return p5.Vector.mult(player.outer.size, steprate);
 				} else {
 					return _reel.mid;
 				}
@@ -83,14 +83,16 @@ function draw() {
 			})();
 			reel.diameter = (() => {
 				if (isInit) {
-					return tape.outer.size.x * 0.17;
+					return player.outer.size.x * 0.17;
 				} else {
 					return _reel.diameter;
 				}
 			})();
 			reel.outer = (() => {
-				const max = tape.outer.size.x * 0.07;
-
+				const max = player.outer.size.x * 0.07;
+				const iphase = j === 0 ? 0 : PI;
+				const thickness = (cos(frameCount * 0.1 + iphase) + 1) * 0.5 * max;
+				return reel.diameter + thickness;
 			})();
 			reel.contact = (() => {
 				if (isInit) {
@@ -121,44 +123,45 @@ function draw() {
 				});
 			})();
 			pp(() => {
-				const _pg = pg.tapes[i].reels;
+				const _pg = pg.players[i].reels;
 				//pg.reels.fill("red");
-				_pg.translate(tape.outer.margin);
+				_pg.translate(player.outer.margin);
 				_pg.strokeWeight(size * 0.005);
 				_pg.noFill();
 				_pg.stroke(0, 255 / (i * 0.5 + 1));
 				reel.gears.forEach(gear => _pg.line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
 				_pg.circle(reel.mid.x, reel.mid.y, reel.diameter);
-			}, pg.tapes[i].reels);
+				_pg.circle(reel.mid.x, reel.mid.y, reel.outer);
+			}, pg.players[i].reels);
 			return reel;
 		});
-		const _anchors = isInit ? [...Array(2)] : _tape.anchors;
-		tape.anchors = _anchors.map((_anchor, j) => {
+		const _anchors = isInit ? [...Array(2)] : _player.anchors;
+		player.anchors = _anchors.map((_anchor, j) => {
 			const anchor = {};
 			anchor.mid = (() => {
 				if (isInit) {
 					const xdir = j === 0 ? -1 : 1; // left or right
 					const steprate = [0.5 + 0.3 * xdir, 0.8];
-					return p5.Vector.mult(tape.outer.size, steprate);
+					return p5.Vector.mult(player.outer.size, steprate);
 				} else {
 					return _anchor.mid;
 				}
 			})();
 			anchor.diameter = (() => {
 				if (isInit) {
-					return tape.outer.size.x * 0.03;
+					return player.outer.size.x * 0.03;
 				} else {
 					return _anchor.diameter;
 				}
 			})();
 			anchor.contact = (() => {
 				if (isInit) {
-					const rotate = 0.1 * PI;
+					const angle = 0.1 * PI;
 					if (j === 0) { // left
-						const diff = p5.Vector.fromAngle(PI - rotate, anchor.diameter * 0.5);
+						const diff = p5.Vector.fromAngle(PI - angle, anchor.diameter * 0.5);
 						return p5.Vector.add(anchor.mid, diff);
 					} else { // right
-						const diff = p5.Vector.fromAngle(rotate, anchor.diameter * 0.5);
+						const diff = p5.Vector.fromAngle(angle, anchor.diameter * 0.5);
 						return p5.Vector.add(anchor.mid, diff);
 					}
 				} else {
@@ -174,41 +177,41 @@ function draw() {
 				}
 			})();
 			pp(() => {
-				const _pg = pg.tapes[i].anchors;
-				_pg.translate(tape.outer.margin);
+				const _pg = pg.players[i].anchors;
+				_pg.translate(player.outer.margin);
 				_pg.circle(anchor.mid.x, anchor.mid.y, anchor.diameter);
-			}, pg.tapes[i].anchors)
+			}, pg.players[i].anchors)
 			return anchor;
 		});
-		tape.line = (() => {
-			const line = {};
+		player.tape = (() => {
+			const tape = {};
 			pp(() => {
-				const _pg = pg.tapes[i].line;
-				_pg.translate(tape.outer.margin);
-				tape.reels.forEach((reel, j) => {
-					_pg.line(reel.contact.x, reel.contact.y, tape.anchors[j].contact.x, tape.anchors[j].contact.y);
+				const _pg = pg.players[i].tape;
+				_pg.translate(player.outer.margin);
+				player.reels.forEach((reel, j) => {
+					_pg.line(reel.contact.x, reel.contact.y, player.anchors[j].contact.x, player.anchors[j].contact.y);
 				});
-				_pg.line(tape.anchors[0].bottom.x, tape.anchors[0].bottom.y, tape.anchors[1].bottom.x, tape.anchors[1].bottom.y);
-			}, pg.tapes[i].line);
-			return line;
+				_pg.line(player.anchors[0].bottom.x, player.anchors[0].bottom.y, player.anchors[1].bottom.x, player.anchors[1].bottom.y);
+			}, pg.players[i].tape);
+			return tape;
 		})();
-		return tape;
+		return player;
 	});
 	background(255);
 	drawFrame(size, size);
-	pg.tapes.forEach(tape => {
-		image(tape.outer, 0, 0);
-		tape.outer.clear();
-		image(tape.reels, 0, 0);
-		tape.reels.clear();
-		image(tape.anchors, 0, 0);
-		tape.anchors.clear();
-		image(tape.line, 0, 0);
-		tape.line.clear();
+	pg.players.forEach(player => {
+		image(player.outer, 0, 0);
+		player.outer.clear();
+		image(player.reels, 0, 0);
+		player.reels.clear();
+		image(player.anchors, 0, 0);
+		player.anchors.clear();
+		image(player.tape, 0, 0);
+		player.tape.clear();
 	});
 	// debug
 	text(keyCode, size / 2, size / 2);
-	debug(dt.tapes[0]);
+	debug(dt.players[0]);
 	if (isInit) isInit = false;
 }
 
