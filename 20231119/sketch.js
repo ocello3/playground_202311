@@ -1,11 +1,19 @@
 let isInit = true;
 let size = {}, mp3 = {}, pg = {}, dt = {};
+let param = {
+	status: ['stop', 'stop', 'stop', 'stop'], // play, reverse, stop
+}
 
 function preload() {
-	mp3.voice1 = loadSound("assets/voice1.mp3");
-	mp3.voice2 = loadSound("assets/voice2.mp3");
-	mp3.voice3 = loadSound("assets/voice3.mp3");
-	mp3.voice4 = loadSound("assets/voice4.mp3");
+	function updateStatus(i) {
+		if (status === 'play') param.status[i] = 'reverse';
+		if (status === 'reverse') param.status[i] = 'stop';
+		throw `i: ${i}, status: ${param.status[i]}`;
+	}
+	mp3.voices = [...Array(4)].map((_, i) => {
+		const path = `assets/voice${i}.mp3`;
+		return loadSound(path).onended(updateStatus(i));
+	});
 	mp3.beep = loadSound("assets/beep.mp3");
 	mp3.noise = loadSound("assets/noise.mp3");
 	mp3.pulse = loadSound("assets/pulse.mp3");
@@ -95,17 +103,13 @@ function draw() {
 				return reel.diameter + thickness;
 			})();
 			reel.contact = (() => {
-				if (isInit) {
-					const angle = 0.05 * PI;
-					if (j === 0) { // left
-						const diff = p5.Vector.fromAngle(PI - angle, reel.diameter * 0.5);
-						return p5.Vector.add(reel.mid, diff);
-					} else { // right
-						const diff = p5.Vector.fromAngle(angle, reel.diameter * 0.5);
-						return p5.Vector.add(reel.mid, diff);
-					}
-				} else {
-					return _reel.contact;
+				const angle = 0.05 * PI;
+				if (j === 0) { // left
+					const diff = p5.Vector.fromAngle(PI - angle, reel.outer * 0.5);
+					return p5.Vector.add(reel.mid, diff);
+				} else { // right
+					const diff = p5.Vector.fromAngle(angle, reel.outer * 0.5);
+					return p5.Vector.add(reel.mid, diff);
 				}
 			})();
 			reel.gears = (() => {
@@ -209,6 +213,8 @@ function draw() {
 		image(player.tape, 0, 0);
 		player.tape.clear();
 	});
+	// sound
+	
 	// debug
 	text(keyCode, size / 2, size / 2);
 	debug(dt.players[0]);
@@ -216,8 +222,8 @@ function draw() {
 }
 
 function keyPressed() {
-	if (key === "1") mp3.voice1.play();
-	if (key === "2") mp3.voice2.play();
-	if (key === "3") mp3.voice3.play();
-	if (key === "4") mp3.voice4.play();
+	if (key === "1") mp3.voices[0].play();
+	if (key === "1") mp3.voices[1].play();
+	if (key === "2") mp3.voices[2].play();
+	if (key === "3") mp3.voices[3].play();
 }
