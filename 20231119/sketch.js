@@ -1,7 +1,7 @@
 let isInit = true;
 let size = {}, mp3 = {}, pg = {}, dt = {};
 let param = {
-	status: ['stop', 'stop', 'stop', 'stop'], // play, reverse, stop
+	status: ['keep', 'keep', 'keep', 'keep'], // play, reverse, stop, keep
 }
 
 function preload() {
@@ -214,8 +214,27 @@ function draw() {
 		player.tape.clear();
 	});
 	// sound
-	
-	// debug
+	param.status.forEach((status, i) => { // start from here
+		if (status === 'keep') {
+			return false;
+		} else if (status === 'play') {
+			mp3.voices[i].rate(1);
+			mp3.voices[i].play();
+			return false;
+		} else if (status === 'reverse') {
+			mp3.voices[i].rate(-1);
+			mp3.voices[i].play();
+			return false;
+		}
+		throw `status: ${status}, i: ${i}`;
+	});
+	// init and reset status
+	if (isInit) {
+		param.status[0] = 'play'[0] = 'play';
+		return false;
+	}
+	param.status = ['keep', 'keep', 'keep', 'keep'];
+// debug
 	text(keyCode, size / 2, size / 2);
 	debug(dt.players[0]);
 	if (isInit) isInit = false;

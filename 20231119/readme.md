@@ -25,4 +25,14 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 	- 待機中から再生開始となるトリガー: '再生終わり'のstatusになると、他の3つのトラックでstatusが待機中のトラックからランダムに選ぶ。
 - 音源を再生する。
 
-# メモ
+# 再生の管理
+play, reverse, stopの3つの状態を遷移する。
+初期値はすべてstopとする。 -> どれかをplay
+onendedとして、play -> reverse、reversr -> stopを設定する。
+
+決めること
+- stopからstartへのトリガーをどうするか
+- 1フレーム目では再生開始したくない -> isInitでなければ最初のトラックをplayに更新
+
+前フレームと同じ -> 何もしない
+前フレームと違う -> 変更後の状態を実行する
