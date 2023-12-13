@@ -9,10 +9,11 @@ function preload() {
 	mp3.voices = [...Array(4)].map((_, i) => {
 		const path = `assets/voice${i}.mp3`;
 		return loadSound(path).onended(() => { // here
-			if (param.rate[i] > 0) {
-				param.status[i] = 'reverse'; // 順再生の場合
-			} else if (param.rate[i] < 0) {
-				param.status[i] = 'stop'; // 逆再生の場合
+			if (param.rate[i] > 0) { // 順再生の場合
+				param.status[i] = 'reverse'; 
+			} else if (param.rate[i] < 0) { // 逆再生の場合
+				param.status[i] = 'keep';
+				// stopとなっているトラックを探してどれか再生
 			}
 		});
 	});
@@ -234,7 +235,7 @@ function draw() {
 	if (isInit) {
 		param.status[0] = 'play'[0] = 'play';
 		return false;
-	}
+	} // keepかstopならstatusはそのまま
 	param.status = ['keep', 'keep', 'keep', 'keep'];
 // debug
 	text(keyCode, size / 2, size / 2);
