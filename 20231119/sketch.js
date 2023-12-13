@@ -14,11 +14,11 @@ function preload() {
 			} else if (param.rate[i] < 0) { // 逆再生の場合
 				param.status[i] = 'keep';
 				// isPlayingかfalseとなっているトラックを探してどれか再生
-				print(i);
 				const indexs = mp3.voices.flatMap((s, i) => (s.isPlaying()? [] : i)); // 停止中のトラックリスト
 				const range = 1 / indexs.length;
 				const nxt = int(random() / range);
-				status[nxt] = 'play';
+				print(nxt);
+				param.status[nxt] = 'play';
 			}
 		});
 	});
@@ -227,11 +227,10 @@ function draw() {
 			param.rate[i] = 1;
 			mp3.voices[i].play(0, param.rate[i]);
 		} else if (status === 'reverse') {
-			param.rate[i] = -1;
-			// mp3.voices[i].reverseBuffer();
-			// mp3.voices[i].rate(param.rate[i]);
-			// mp3.voices[i].rate(-2);
-			mp3.voices[i].play(0, -1.5);
+			param.rate[i] = -0.5;
+			mp3.voices[i].rate(param.rate[i]);
+			mp3.voices[i].reverseBuffer();
+			mp3.voices[i].play();
 		}
 	});
 	// init and reset status
