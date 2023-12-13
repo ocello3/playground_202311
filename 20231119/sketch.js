@@ -1,8 +1,8 @@
 let isInit = true;
 let size = {}, mp3 = {}, pg = {}, dt = {};
 let param = {
-	rate: [1, 1, 1, 1];
-	status: ['keep', 'keep', 'keep', 'keep'], // play, reverse, stop, keep
+	rate: [1, 1, 1, 1],
+	status: ['keep', 'keep', 'keep', 'keep'], // play, reverse, keep
 }
 
 function preload() {
@@ -10,10 +10,15 @@ function preload() {
 		const path = `assets/voice${i}.mp3`;
 		return loadSound(path).onended(() => { // here
 			if (param.rate[i] > 0) { // 順再生の場合
-				param.status[i] = 'reverse'; 
+				param.status[i] = 'reverse';
 			} else if (param.rate[i] < 0) { // 逆再生の場合
 				param.status[i] = 'keep';
-				// stopとなっているトラックを探してどれか再生
+				// isPlayingかfalseとなっているトラックを探してどれか再生
+				print(i);
+				const indexs = mp3.voices.flatMap((s, i) => (s.isPlaying()? [] : i)); // 停止中のトラックリスト
+				const range = 1 / indexs.length;
+				const nxt = int(random() / range);
+				status[nxt] = 'play';
 			}
 		});
 	});
@@ -220,26 +225,24 @@ function draw() {
 	param.status.forEach((status, i) => {
 		if (status === 'play') {
 			param.rate[i] = 1;
-			mp3.voices[i].rate(param.rate[i]);
-			mp3.voices[i].play();
-			return false;
+			mp3.voices[i].play(0, param.rate[i]);
 		} else if (status === 'reverse') {
 			param.rate[i] = -1;
-			mp3.voices[i].rate(param.rate[i]);
-			mp3.voices[i].play();
-			return false;
+			// mp3.voices[i].reverseBuffer();
+			// mp3.voices[i].rate(param.rate[i]);
+			// mp3.voices[i].rate(-2);
+			mp3.voices[i].play(0, -1.5);
 		}
-		return false;
 	});
 	// init and reset status
 	if (isInit) {
-		param.status[0] = 'play'[0] = 'play';
-		return false;
-	} // keepかstopならstatusはそのまま
-	param.status = ['keep', 'keep', 'keep', 'keep'];
+		param.status[0] = 'play';
+	} else {
+		param.status = ['keep', 'keep', 'keep', 'keep'];
+	}
 // debug
 	text(keyCode, size / 2, size / 2);
-	debug(dt.players[0]);
+	debug(param);
 	if (isInit) isInit = false;
 }
 
