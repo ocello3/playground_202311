@@ -1,18 +1,20 @@
 let isInit = true;
 let size = {}, mp3 = {}, pg = {}, dt = {};
 let param = {
+	rate: [1, 1, 1, 1];
 	status: ['keep', 'keep', 'keep', 'keep'], // play, reverse, stop, keep
 }
 
 function preload() {
-	function updateStatus(i) {
-		if (status === 'play') param.status[i] = 'reverse';
-		if (status === 'reverse') param.status[i] = 'stop';
-		throw `i: ${i}, status: ${param.status[i]}`;
-	}
 	mp3.voices = [...Array(4)].map((_, i) => {
 		const path = `assets/voice${i}.mp3`;
-		return loadSound(path).onended(updateStatus(i));
+		return loadSound(path).onended(() => { // here
+			if (param.rate[i] > 0) {
+				param.status[i] = 'reverse'; // 順再生の場合
+			} else if (param.rate[i] < 0) {
+				param.status[i] = 'stop'; // 逆再生の場合
+			}
+		});
 	});
 	mp3.beep = loadSound("assets/beep.mp3");
 	mp3.noise = loadSound("assets/noise.mp3");
@@ -213,20 +215,20 @@ function draw() {
 		image(player.tape, 0, 0);
 		player.tape.clear();
 	});
-	// sound
-	param.status.forEach((status, i) => { // start from here
-		if (status === 'keep') {
-			return false;
-		} else if (status === 'play') {
-			mp3.voices[i].rate(1);
+	// sound after onended in preload
+	param.status.forEach((status, i) => {
+		if (status === 'play') {
+			param.rate[i] = 1;
+			mp3.voices[i].rate(param.rate[i]);
 			mp3.voices[i].play();
 			return false;
 		} else if (status === 'reverse') {
-			mp3.voices[i].rate(-1);
+			param.rate[i] = -1;
+			mp3.voices[i].rate(param.rate[i]);
 			mp3.voices[i].play();
 			return false;
 		}
-		throw `status: ${status}, i: ${i}`;
+		return false;
 	});
 	// init and reset status
 	if (isInit) {
