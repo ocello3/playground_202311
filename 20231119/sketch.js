@@ -11,14 +11,22 @@ function preload() {
 		return loadSound(path).onended(() => { // here
 			if (param.rate[i] > 0) { // 順再生の場合
 				param.status[i] = 'reverse';
-			} else if (param.rate[i] < 0) { // 逆再生の場合
-				param.status[i] = 'keep';
 				// isPlayingかfalseとなっているトラックを探してどれか再生
 				const indexs = mp3.voices.flatMap((s, i) => (s.isPlaying()? [] : i)); // 停止中のトラックリスト
-				const range = 1 / indexs.length;
-				const nxt = int(random() / range);
+				print(indexs);
+				const range = indexs.length === 0 ? 1 / 4 : 1 / indexs.length;
+				// const nxt = int(random() / range);
+				const nxt = (() => {
+					const x = random();
+					if (x > range * (indexs.length -1)) return indexs.length -1;
+					if (x > range * (indexs.length -2)) return indexs.length -2;
+					if (x > range * (indexs.length -3)) return indexs.length -3;
+					throw indexs.length;
+				})();
 				print(nxt);
 				param.status[nxt] = 'play';
+			} else if (param.rate[i] < 0) { // 逆再生の場合
+				param.status[i] = 'keep';
 			}
 		});
 	});
@@ -224,10 +232,10 @@ function draw() {
 	// sound after onended in preload
 	param.status.forEach((status, i) => {
 		if (status === 'play') {
-			param.rate[i] = 1;
+			param.rate[i] = random() * 2;
 			mp3.voices[i].play(0, param.rate[i]);
 		} else if (status === 'reverse') {
-			param.rate[i] = -0.5;
+			param.rate[i] = -1 * random() * 0.8;
 			mp3.voices[i].rate(param.rate[i]);
 			mp3.voices[i].reverseBuffer();
 			mp3.voices[i].play();
