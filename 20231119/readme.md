@@ -18,12 +18,10 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - テープ書く
 - 巻かれたテープを書く
 - reel.contactの位置に巻かれたテープの厚みを反映する
+- 再生をコントロールする仕組みを考える。
 
 # 待ち
-- 再生をコントロールする仕組みを考える。
-	- オブジェクトplayers = player * 4トラック。status(再生開始 → 再生中 → 再生終わり=逆再生開始 → 逆再生中 → 逆再生終わり、→ 待機中)
-	- 待機中から再生開始となるトリガー: '再生終わり'のstatusになると、他の3つのトラックでstatusが待機中のトラックからランダムに選ぶ。
-- 音源を再生する。
+- paramではflagのみ管理する。callbackでもdtを操作できそう。
 
 # 再生の管理
 play, reverse, stopの3つの状態を遷移する。
