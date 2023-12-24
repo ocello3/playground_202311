@@ -1,33 +1,14 @@
 let isInit = true;
 let size = {}, mp3 = {}, pg = {}, dt = {};
 let param = {
-	rate: [1, 1, 1, 1],
-	status: ['keep', 'keep', 'keep', 'keep'], // play, reverse, keep
+	isEnded: [false, false, false, false],
 }
 
 function preload() {
 	mp3.voices = [...Array(4)].map((_, i) => {
 		const path = `assets/voice${i}.mp3`;
-		return loadSound(path).onended(() => { // here
-			if (param.rate[i] > 0) { // 順再生の場合
-				param.status[i] = 'reverse';
-				// isPlayingかfalseとなっているトラックを探してどれか再生
-				const indexs = mp3.voices.flatMap((s, i) => (s.isPlaying()? [] : i)); // 停止中のトラックリスト
-				print(indexs);
-				const range = indexs.length === 0 ? 1 / 4 : 1 / indexs.length;
-				// const nxt = int(random() / range);
-				const nxt = (() => {
-					const x = random();
-					if (x > range * (indexs.length -1)) return indexs.length -1;
-					if (x > range * (indexs.length -2)) return indexs.length -2;
-					if (x > range * (indexs.length -3)) return indexs.length -3;
-					throw indexs.length;
-				})();
-				print(nxt);
-				param.status[nxt] = 'play';
-			} else if (param.rate[i] < 0) { // 逆再生の場合
-				param.status[i] = 'keep';
-			}
+		return loadSound(path).onended(() => {
+			param.isEnded[i] = true;
 		});
 	});
 	mp3.beep = loadSound("assets/beep.mp3");
@@ -53,6 +34,32 @@ function setup() {
 }
 
 function draw() {
+	dt.nxt = (() => {
+		if (isInit) return [];
+		if (param.isEnded.every((status) => status === false)) return [];
+		const endedIndexes = param.isEnded.flatMap((v, i) => (v === true) ? i : []);
+		const waitingIndexs = mp3.voices.flatMap((s, i) => (s.isPlaying() ? [] : i));
+		function getIndexes(total, length, acc = []) {
+			if (acc.length === length) {
+				return acc;
+			}
+			const randomIndex = floor(random() * n) + 1;
+			if (!acc.includes(randomIndex)) {
+				return getIndexes(total, [...acc, randomIndex]);
+			} else {
+				return getIndexes(total, acc);
+			}
+		}
+		if (endedIndexes.length = waitingIndexs.length) {
+			return waitingIndexs;
+		} else if (endedIndexes.length < waitingIndexs.length) {
+			const indexes = getIndexes(waitingIndexs.length, endedIndexes.length);
+			return indexes.map(i => waitingIndexs[i]);
+		} else {
+			// if number of ended tracks is less than not playing tracks (irregular case)
+			return getIndexes(param.isEnded.length, endedIndexes.length);
+		}
+	})();
 	const _players = isInit ? [...Array(4)] : dt.players;
 	dt.players = _players.map((_player, i) => {
 		const player = {};
@@ -215,6 +222,38 @@ function draw() {
 			}, pg.players[i].tape);
 			return tape;
 		})();
+		player.ctrl = (() => {
+			const ctrl = {};
+			ctrl.status = (() => {
+				if (isInit) {
+					if (i === 0) return "play";
+					return "keep";
+				} else if (param.isEnded.every(v => v === false)) {
+					return "keep";
+				}  else if (dt.nxt.some(v => v === i)) {
+					return "play";
+				} else if (param.isEnded[i] === true) {
+					if (_player.ctrl.rate[i] > 0) { // 順再生の場合
+						return 'reverse';
+					} else if (param.rate[i] < 0) { // 逆再生の場合
+						return 'keep';
+					}
+				}
+			})();
+			ctrl.rate = (() => {
+				if (ctrl.status === 'play') {
+					return random() * 2;
+				} else if (ctrl.status === 'reverse') {
+					return -1 * random() * 0.8;
+				}
+			})();
+			if (ctrl.status === 'play' ||ctrl.status === 'reverse') {
+				mp3.voices[i].rate(ctrl.rate);
+				if (ctrl.status === 'reverse') mp3.voices[i].reverseBuffer();
+				mp3.voices[i].play();
+			}
+			return ctrl;
+		})();
 		return player;
 	});
 	background(255);
@@ -229,27 +268,11 @@ function draw() {
 		image(player.tape, 0, 0);
 		player.tape.clear();
 	});
-	// sound after onended in preload
-	param.status.forEach((status, i) => {
-		if (status === 'play') {
-			param.rate[i] = random() * 2;
-			mp3.voices[i].play(0, param.rate[i]);
-		} else if (status === 'reverse') {
-			param.rate[i] = -1 * random() * 0.8;
-			mp3.voices[i].rate(param.rate[i]);
-			mp3.voices[i].reverseBuffer();
-			mp3.voices[i].play();
-		}
-	});
-	// init and reset status
-	if (isInit) {
-		param.status[0] = 'play';
-	} else {
-		param.status = ['keep', 'keep', 'keep', 'keep'];
-	}
+	// reset status
+	param.isEnded = [false, false, false, false];
 // debug
 	text(keyCode, size / 2, size / 2);
-	debug(param);
+	debug(dt.players[0].ctrl);
 	if (isInit) isInit = false;
 }
 

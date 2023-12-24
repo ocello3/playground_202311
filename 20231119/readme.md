@@ -22,6 +22,7 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 
 # 待ち
 - paramではflagのみ管理する。callbackでもdtを操作できそう。
+- iPadだとpGraphicsを複数描画するとかなり重くなるので、レイヤーを1枚にまとめる
 
 # 再生の管理
 play, reverse, stopの3つの状態を遷移する。
