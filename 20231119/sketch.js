@@ -1,5 +1,5 @@
 let isInit = true;
-let size = {}, mp3 = {}, pg = {}, dt = {};
+let size = {}, mp3 = {}, dt = {};
 let param = {
 	isEnded: [false, false, false, false],
 }
@@ -19,21 +19,12 @@ function preload() {
 function setup() {
 	size = getSize();
 	createCanvas(size, size).parent('canvas');
-	pg = {
-		players: [...Array(4)].map(() => {
-			const player = {};
-			player.outer = createGraphics(size, size);
-			player.reels = createGraphics(size, size);
-			player.anchors = createGraphics(size, size);
-			player.tape = createGraphics(size, size);
-			return player;
-		}),
-	}
 	// frameRate();
 	noLoop();
 }
 
 function draw() {
+	background(255);
 	dt.nxt = (() => {
 		if (isInit) return [];
 		if (param.isEnded.every((status) => status === false)) return [];
@@ -84,13 +75,12 @@ function draw() {
 				}
 			})();
 			pp(() => {
-				const _pg = pg.players[i].outer;
-				_pg.noFill();
-				_pg.strokeWeight(size * 0.005);
-				_pg.stroke(0, 255 / (i * 0.5 + 1));
-				_pg.translate(outer.margin);
-				_pg.rect(0, 0, outer.size.x, outer.size.y, 10);
-			}, pg.players[i].outer);
+				noFill();
+				strokeWeight(size * 0.005);
+				stroke(0, 255 / (i * 0.5 + 1));
+				translate(outer.margin);
+				rect(0, 0, outer.size.x, outer.size.y, 10);
+			});
 			return outer;
 		})();
 		const _reels = isInit ? [...Array(2)] : _player.reels;
@@ -150,16 +140,14 @@ function draw() {
 				});
 			})();
 			pp(() => {
-				const _pg = pg.players[i].reels;
-				//pg.reels.fill("red");
-				_pg.translate(player.outer.margin);
-				_pg.strokeWeight(size * 0.005);
-				_pg.noFill();
-				_pg.stroke(0, 255 / (i * 0.5 + 1));
-				reel.gears.forEach(gear => _pg.line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
-				_pg.circle(reel.mid.x, reel.mid.y, reel.diameter);
-				_pg.circle(reel.mid.x, reel.mid.y, reel.outer);
-			}, pg.players[i].reels);
+				translate(player.outer.margin);
+				strokeWeight(size * 0.005);
+				noFill();
+				stroke(0, 255 / (i * 0.5 + 1));
+				reel.gears.forEach(gear => line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
+				circle(reel.mid.x, reel.mid.y, reel.diameter);
+				circle(reel.mid.x, reel.mid.y, reel.outer);
+			});
 			return reel;
 		});
 		const _anchors = isInit ? [...Array(2)] : _player.anchors;
@@ -204,22 +192,20 @@ function draw() {
 				}
 			})();
 			pp(() => {
-				const _pg = pg.players[i].anchors;
-				_pg.translate(player.outer.margin);
-				_pg.circle(anchor.mid.x, anchor.mid.y, anchor.diameter);
-			}, pg.players[i].anchors)
+				translate(player.outer.margin);
+				circle(anchor.mid.x, anchor.mid.y, anchor.diameter);
+			});
 			return anchor;
 		});
 		player.tape = (() => {
 			const tape = {};
 			pp(() => {
-				const _pg = pg.players[i].tape;
-				_pg.translate(player.outer.margin);
+				translate(player.outer.margin);
 				player.reels.forEach((reel, j) => {
-					_pg.line(reel.contact.x, reel.contact.y, player.anchors[j].contact.x, player.anchors[j].contact.y);
+					line(reel.contact.x, reel.contact.y, player.anchors[j].contact.x, player.anchors[j].contact.y);
 				});
-				_pg.line(player.anchors[0].bottom.x, player.anchors[0].bottom.y, player.anchors[1].bottom.x, player.anchors[1].bottom.y);
-			}, pg.players[i].tape);
+				line(player.anchors[0].bottom.x, player.anchors[0].bottom.y, player.anchors[1].bottom.x, player.anchors[1].bottom.y);
+			});
 			return tape;
 		})();
 		player.ctrl = (() => {
@@ -256,18 +242,8 @@ function draw() {
 		})();
 		return player;
 	});
-	background(255);
+
 	drawFrame(size, size);
-	pg.players.forEach(player => {
-		image(player.outer, 0, 0);
-		player.outer.clear();
-		image(player.reels, 0, 0);
-		player.reels.clear();
-		image(player.anchors, 0, 0);
-		player.anchors.clear();
-		image(player.tape, 0, 0);
-		player.tape.clear();
-	});
 	// reset status
 	param.isEnded = [false, false, false, false];
 // debug
