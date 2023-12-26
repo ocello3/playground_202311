@@ -173,11 +173,11 @@ const drawFrame = (w, h) => {
 const pp = (func, pg = undefined) => {
 	if (pg === undefined) {
 		push();
-		func();
+		func;
 		pop();
 	} else {
 		pg.push();
-		func();
+		func;
 		pg.pop();
 	}
 }
