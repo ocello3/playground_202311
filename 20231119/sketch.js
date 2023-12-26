@@ -74,13 +74,6 @@ function draw() {
 					return _player.outer.margin;
 				}
 			})();
-			pp(() => {
-				noFill();
-				strokeWeight(size * 0.005);
-				stroke(0, 255 / (i * 0.5 + 1));
-				translate(outer.margin);
-				rect(0, 0, outer.size.x, outer.size.y, 10);
-			});
 			return outer;
 		})();
 		const _reels = isInit ? [...Array(2)] : _player.reels;
@@ -139,15 +132,6 @@ function draw() {
 					return gear; // improve?
 				});
 			})();
-			pp(() => {
-				translate(player.outer.margin);
-				strokeWeight(size * 0.005);
-				noFill();
-				stroke(0, 255 / (i * 0.5 + 1));
-				reel.gears.forEach(gear => line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
-				circle(reel.mid.x, reel.mid.y, reel.diameter);
-				circle(reel.mid.x, reel.mid.y, reel.outer);
-			});
 			return reel;
 		});
 		const _anchors = isInit ? [...Array(2)] : _player.anchors;
@@ -191,23 +175,8 @@ function draw() {
 					return _anchor.bottom;
 				}
 			})();
-			pp(() => {
-				translate(player.outer.margin);
-				circle(anchor.mid.x, anchor.mid.y, anchor.diameter);
-			});
 			return anchor;
 		});
-		player.tape = (() => {
-			const tape = {};
-			pp(() => {
-				translate(player.outer.margin);
-				player.reels.forEach((reel, j) => {
-					line(reel.contact.x, reel.contact.y, player.anchors[j].contact.x, player.anchors[j].contact.y);
-				});
-				line(player.anchors[0].bottom.x, player.anchors[0].bottom.y, player.anchors[1].bottom.x, player.anchors[1].bottom.y);
-			});
-			return tape;
-		})();
 		player.ctrl = (() => {
 			const ctrl = {};
 			ctrl.status = (() => {
@@ -233,22 +202,67 @@ function draw() {
 					return random() * 0.8;
 				}
 			})();
-			if (ctrl.status === 'play' ||ctrl.status === 'reverse') {
-				mp3.voices[i].rate(ctrl.rate);
-				if (ctrl.status === 'reverse') mp3.voices[i].reverseBuffer();
-				mp3.voices[i].play();
-			}
 			return ctrl;
 		})();
 		return player;
 	});
-
+	// affect
+	const playSample = (ctrl, i) => {
+		if (ctrl.status === 'play' || ctrl.status === 'reverse') {
+			mp3.voices[i].rate(ctrl.rate);
+			if (ctrl.status === 'reverse') mp3.voices[i].reverseBuffer();
+			mp3.voices[i].play();
+		}
+	}
+	const drawOuter = (outer, i) => () => {
+		noFill();
+		strokeWeight(size * 0.005);
+		stroke(0, 255 / (i * 0.5 + 1));
+		rect(0, 0, outer.size.x, outer.size.y, 10);
+	}
+	const drawReels = (reels, i) => () => {
+		strokeWeight(size * 0.005);
+		noFill();
+		stroke(0, 255 / (i * 0.5 + 1));
+		reels.forEach((reel) => {
+			reel.gears.forEach(gear => line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
+			circle(reel.mid.x, reel.mid.y, reel.diameter);
+			circle(reel.mid.x, reel.mid.y, reel.outer);
+		});
+	}
+	const drawAnchor = (anchors) => () => {
+		anchors.forEach((anchor) => {
+			circle(anchor.mid.x, anchor.mid.y, anchor.diameter);
+		})
+	}
+	const drawTape = (reels, anchors) => () => {
+		reels.forEach((reel, j) => {
+			line(reel.contact.x, reel.contact.y, anchors[j].contact.x, anchors[j].contact.y);
+		});
+		line(anchors[0].bottom.x, anchors[0].bottom.y, anchors[1].bottom.x, anchors[1].bottom.y);
+	}
+	const drawPlayer = (player, i) => () => {
+		const { outer, reels, anchors, ctrl } = player;
+		translate(outer.margin);
+		playSample(ctrl, i);
+		pp(drawOuter(outer, i));
+		pp(drawReels(reels, i));
+		pp(drawAnchor(anchors));
+		pp(drawTape(reels, anchors));
+	}
+	dt.players.forEach((player, i) => pp(drawPlayer(player, i)));
 	drawFrame(size, size);
 	// reset status
 	param.isEnded = [false, false, false, false];
-// debug
+	// debug
 	text(keyCode, size / 2, size / 2);
-	debug(dt.players[0].ctrl);
+	debug({
+		size: size,
+		a: dt.players[0].outer,
+		b: dt.players[1].outer,
+		c: dt.players[2].outer,
+		d: dt.players[3].outer,
+	});
 	if (isInit) isInit = false;
 }
 

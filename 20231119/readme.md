@@ -24,7 +24,10 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - 再生のコントロールの再生向きをrateで判別しているが別の方法に変えて、rateの符号をなくす。
 
 # 待ち
+- 再生時にmp3が再生されてしまう問題を解決する。
 - draw及びsoundの再生を別ファイルにする
+- reelの回転速度をrateにして、向きをplay/reverseから決定する。
+- 音量の調節（全部0は大きすぎる）
 
 # 再生の管理
 play, reverse, stopの3つの状態を遷移する。
