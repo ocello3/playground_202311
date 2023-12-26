@@ -22,12 +22,16 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - paramではflagのみ管理する。callbackでもdtを操作できそう。
 - iPadだとpGraphicsを複数描画するとかなり重くなるので、レイヤーを1枚にまとめる
 - 再生のコントロールの再生向きをrateで判別しているが別の方法に変えて、rateの符号をなくす。
-
-# 待ち
-- 再生時にmp3が再生されてしまう問題を解決する。
 - draw及びsoundの再生を別ファイルにする
 - reelの回転速度をrateにして、向きをplay/reverseから決定する。
+
+# 待ち
+- player.ctrl.statusの計算が間違っている気がする。最後のelse ifで前フレームのstatusはkeepなので判別できていなさそう。
+- 再生時にmp3が再生されてしまう問題を解決する。
+- 4トラックに分ける
 - 音量の調節（全部0は大きすぎる）
+- nxtで次のトラックを選ぶ時に再生が終了したばかりのトラックも選ばれるので、除外したい。
+- 再生時の音量を取得してテープに波形を表示する
 
 # 再生の管理
 play, reverse, stopの3つの状態を遷移する。

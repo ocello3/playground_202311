@@ -54,6 +54,34 @@ function draw() {
 	const _players = isInit ? [...Array(4)] : dt.players;
 	dt.players = _players.map((_player, i) => {
 		const player = {};
+		player.ctrl = (() => {
+			const ctrl = {};
+			ctrl.status = (() => {
+				if (isInit) {
+					if (i === 0) return "play";
+					return "keep";
+				}  else if (dt.nxt.some(v => v === i)) {
+					return "play";
+				} else if (param.isEnded[i] === false) {
+					return "keep";
+				} else if (param.isEnded[i] === true) {
+					if (_player.ctrl.status === 'play') {
+						return 'reverse';
+					} else if (_player.ctrl.status === "reverse") {
+						return 'stop';
+					}
+				}
+				throw `param.isEnded: ${param.isEnded[i]}`;
+			})();
+			ctrl.rate = (() => {
+				if (ctrl.status === 'play') {
+					return random() * 2;
+				} else if (ctrl.status === 'reverse') {
+					return random() * 0.8;
+				}
+			})();
+			return ctrl;
+		})();
 		player.outer = (() => {
 			const outer = {};
 			outer.size = (() => {
@@ -88,13 +116,16 @@ function draw() {
 					return _reel.mid;
 				}
 			})();
-			reel.angle = (() => {
-				if (isInit) {
-					return 0;
-				} else {
-					return _reel.angle + 1; // replace 1 to rotate speed
-				}
+			reel.rotate = (() => {
+				const speed = player.ctrl.rate * 0.7;
+				if (player.ctrl.status === 'play') return speed;
+				if (player.ctrl.status === 'reverse') return -1 * speed;
+				if (isInit) return 0;
+				if (player.ctrl.status === 'stop') return 0;
+				if (player.ctrl.status === 'keep') return _reel.rotate;
+				throw `status: ${player.ctrl.status}`;
 			})();
+			reel.angle = isInit ? 0 : _reel.angle + reel.rotate;
 			reel.diameter = (() => {
 				if (isInit) {
 					return player.outer.size.x * 0.17;
@@ -177,33 +208,6 @@ function draw() {
 			})();
 			return anchor;
 		});
-		player.ctrl = (() => {
-			const ctrl = {};
-			ctrl.status = (() => {
-				if (isInit) {
-					if (i === 0) return "play";
-					return "keep";
-				} else if (param.isEnded.every(v => v === false)) {
-					return "keep";
-				}  else if (dt.nxt.some(v => v === i)) {
-					return "play";
-				} else if (param.isEnded[i] === true) {
-					if (_player.ctrl.status === 'play') {
-						return 'reverse';
-					} else if (_player.ctrl.status === "reverse") {
-						return 'keep';
-					}
-				}
-			})();
-			ctrl.rate = (() => {
-				if (ctrl.status === 'play') {
-					return random() * 2;
-				} else if (ctrl.status === 'reverse') {
-					return random() * 0.8;
-				}
-			})();
-			return ctrl;
-		})();
 		return player;
 	});
 	dt.players.forEach((player, i) => pp(drawPlayer(player, i)));
@@ -213,11 +217,10 @@ function draw() {
 	// debug
 	text(keyCode, size / 2, size / 2);
 	debug({
-		size: size,
-		a: dt.players[0].outer,
-		b: dt.players[1].outer,
-		c: dt.players[2].outer,
-		d: dt.players[3].outer,
+		a: dt.players[0].reels[0].rotate,
+		b: dt.players[1].reels[0].rotate,
+		c: dt.players[2].reels[0].rotate,
+		d: dt.players[3].reels[0].rotate,
 	});
 	if (isInit) isInit = false;
 }
