@@ -19,10 +19,12 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - 巻かれたテープを書く
 - reel.contactの位置に巻かれたテープの厚みを反映する
 - 再生をコントロールする仕組みを考える。
-
-# 待ち
 - paramではflagのみ管理する。callbackでもdtを操作できそう。
 - iPadだとpGraphicsを複数描画するとかなり重くなるので、レイヤーを1枚にまとめる
+- 再生のコントロールの再生向きをrateで判別しているが別の方法に変えて、rateの符号をなくす。
+
+# 待ち
+- draw及びsoundの再生を別ファイルにする
 
 # 再生の管理
 play, reverse, stopの3つの状態を遷移する。

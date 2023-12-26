@@ -219,9 +219,9 @@ function draw() {
 				}  else if (dt.nxt.some(v => v === i)) {
 					return "play";
 				} else if (param.isEnded[i] === true) {
-					if (_player.ctrl.rate[i] > 0) { // 順再生の場合
+					if (_player.ctrl.status === 'play') {
 						return 'reverse';
-					} else if (param.rate[i] < 0) { // 逆再生の場合
+					} else if (_player.ctrl.status === "reverse") {
 						return 'keep';
 					}
 				}
@@ -230,7 +230,7 @@ function draw() {
 				if (ctrl.status === 'play') {
 					return random() * 2;
 				} else if (ctrl.status === 'reverse') {
-					return -1 * random() * 0.8;
+					return random() * 0.8;
 				}
 			})();
 			if (ctrl.status === 'play' ||ctrl.status === 'reverse') {
