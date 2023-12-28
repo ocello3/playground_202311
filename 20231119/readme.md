@@ -26,7 +26,7 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - reelの回転速度をrateにして、向きをplay/reverseから決定する。
 
 # 待ち
-- player.ctrl.statusの計算が間違っている気がする。最後のelse ifで前フレームのstatusはkeepなので判別できていなさそう。
+- player.ctrl.statusの計算が間違っている気がする。最後のelse ifで前フレームのstatusはkeepなので判別できていなさそう。nxtが配列になっていて、どのindexが再生されているか分からない。
 - 再生時にmp3が再生されてしまう問題を解決する。
 - 4トラックに分ける
 - 音量の調節（全部0は大きすぎる）

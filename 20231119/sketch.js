@@ -11,9 +11,9 @@ function preload() {
 			param.isEnded[i] = true;
 		});
 	});
-	mp3.beep = loadSound("assets/beep.mp3");
-	mp3.noise = loadSound("assets/noise.mp3");
-	mp3.pulse = loadSound("assets/pulse.mp3");
+	mp3.beep = loadSound('assets/beep.mp3');
+	mp3.noise = loadSound('assets/noise.mp3');
+	mp3.pulse = loadSound('assets/pulse.mp3');
 }
 
 function setup() {
@@ -58,20 +58,27 @@ function draw() {
 			const ctrl = {};
 			ctrl.status = (() => {
 				if (isInit) {
-					if (i === 0) return "play";
-					return "keep";
-				}  else if (dt.nxt.some(v => v === i)) {
-					return "play";
+					if (i === 0) return 'play';
+					return 'keep';
+				} else if (dt.nxt.some(v => v === i)) {
+					return 'play';
 				} else if (param.isEnded[i] === false) {
-					return "keep";
-				} else if (param.isEnded[i] === true) {
-					if (_player.ctrl.status === 'play') {
-						return 'reverse';
-					} else if (_player.ctrl.status === "reverse") {
-						return 'stop';
-					}
+					return 'keep';
+				} else if (_player.ctrl.direction === true) {
+					throw 'working';
+					return 'reverse';
+				} else if (_player.ctrl.direction === false) {
+					throw 'working';
+					return 'stop';
+				} else {
+					throw `isEnded: ${param.isEnded}`;
 				}
-				throw `param.isEnded: ${param.isEnded[i]}`;
+			})();
+			ctrl.direction = (() => {
+				if (isInit) return true;
+				if (ctrl.status === 'play') return true;
+				if (ctrl.status === 'reverse') return false;
+				return _player.ctrl.direction;
 			})();
 			ctrl.rate = (() => {
 				if (ctrl.status === 'play') {
@@ -217,17 +224,17 @@ function draw() {
 	// debug
 	text(keyCode, size / 2, size / 2);
 	debug({
-		a: dt.players[0].reels[0].rotate,
-		b: dt.players[1].reels[0].rotate,
-		c: dt.players[2].reels[0].rotate,
-		d: dt.players[3].reels[0].rotate,
+		a: dt.players[0].ctrl.direction,
+		b: dt.players[1].ctrl.direction,
+		c: dt.players[2].ctrl.direction,
+		d: dt.players[3].ctrl.direction,
 	});
 	if (isInit) isInit = false;
 }
 
 function keyPressed() {
-	if (key === "1") mp3.voices[0].play();
-	if (key === "1") mp3.voices[1].play();
-	if (key === "2") mp3.voices[2].play();
-	if (key === "3") mp3.voices[3].play();
+	if (key === '1') mp3.voices[0].play();
+	if (key === '1') mp3.voices[1].play();
+	if (key === '2') mp3.voices[2].play();
+	if (key === '3') mp3.voices[3].play();
 }
