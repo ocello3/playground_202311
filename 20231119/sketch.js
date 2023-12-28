@@ -60,18 +60,17 @@ function draw() {
 				if (isInit) {
 					if (i === 0) return 'play';
 					return 'keep';
+				} else if (param.isEnded[i] === true) {
+					if (_player.ctrl.direction === true) {
+						return 'reverse';
+					} else {
+						return 'stop';
+					}
+				// if param.isEnded[i] === false
 				} else if (dt.nxt.some(v => v === i)) {
 					return 'play';
-				} else if (param.isEnded[i] === false) {
-					return 'keep';
-				} else if (_player.ctrl.direction === true) {
-					throw 'working';
-					return 'reverse';
-				} else if (_player.ctrl.direction === false) {
-					throw 'working';
-					return 'stop';
 				} else {
-					throw `isEnded: ${param.isEnded}`;
+					return 'keep';
 				}
 			})();
 			ctrl.direction = (() => {
@@ -219,16 +218,18 @@ function draw() {
 	});
 	dt.players.forEach((player, i) => pp(drawPlayer(player, i)));
 	drawFrame(size, size);
-	// reset status
-	param.isEnded = [false, false, false, false];
 	// debug
 	text(keyCode, size / 2, size / 2);
 	debug({
+		param: param.isEnded,
+		nxt: dt.nxt,
 		a: dt.players[0].ctrl.direction,
 		b: dt.players[1].ctrl.direction,
 		c: dt.players[2].ctrl.direction,
 		d: dt.players[3].ctrl.direction,
 	});
+	// reset status
+	param.isEnded = [false, false, false, false];
 	if (isInit) isInit = false;
 }
 
