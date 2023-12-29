@@ -127,9 +127,9 @@ function draw() {
 				}
 			})();
 			reel.rotate = (() => {
-				const speed = player.ctrl.rate * 0.7;
-				if (player.ctrl.status === 'play') return speed;
-				if (player.ctrl.status === 'reverse') return -1 * speed;
+				const velocity = player.ctrl.rate * 0.5;
+				if (player.ctrl.status === 'play') return velocity;
+				if (player.ctrl.status === 'reverse') return -1 * velocity;
 				if (isInit) return 0;
 				if (player.ctrl.status === 'stop') return 0;
 				if (player.ctrl.status === 'keep') return _reel.rotate;
@@ -143,24 +143,24 @@ function draw() {
 					return _reel.diameter;
 				}
 			})();
-			reel.maxThickness = isInit ? player.outer.size.x * 0.1 : _reel.thickness;
+			reel.maxThickness = isInit ? player.outer.size.x * 0.15 : _reel.maxThickness;
 			reel.tapeInc = (() => {
 				if (player.ctrl.status === 'play' || player.ctrl.status === 'reverse') {
 					const totalFrame = player.ctrl.duration * 60;
 					const diff = reel.maxThickness / totalFrame * player.ctrl.rate;
-					const inc = j === 0 ? diff : -diff;
-					return player.ctrl.direction ? inc : -inc;
+					const inc = j === 0 ? diff : diff * (-1);
+					return player.ctrl.direction ? inc * (-1) : inc;
 				} else if (player.ctrl.status === 'stop') {
 					return 0;
 				} else {
 					return isInit ? 0 : _reel.tapeInc;
 				};
 			})();
-			reel.thickness = (() => { // ここから修正する
-				if (isInit) {
+			reel.thickness = (() => {
+				if (player.ctrl.status === 'start' || player.ctrl.status === 'stop') {
 					if (j === 0) return reel.maxThickness
 					return 0;
-				} else if (player.ctrl.status === 'start' || player.ctrl.status === 'stop') {
+				} else if (isInit) {
 					if (j === 0) return reel.maxThickness
 					return 0;
 				} else if (player.ctrl.status === 'reverse') {
