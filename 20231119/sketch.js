@@ -2,6 +2,10 @@ let isInit = true;
 let size = {}, mp3 = {}, dt = {};
 let param = {
 	isEnded: [false, false, false, false],
+	rate: {
+		play: 2,
+		reverse: 0.8,
+	}
 }
 
 function preload() {
@@ -66,7 +70,6 @@ function draw() {
 					} else {
 						return 'stop';
 					}
-				// if param.isEnded[i] === false
 				} else if (dt.nxt.some(v => v === i)) {
 					return 'play';
 				} else {
@@ -81,11 +84,12 @@ function draw() {
 			})();
 			ctrl.rate = (() => {
 				if (ctrl.status === 'play') {
-					return random() * 2;
+					return random() * param.rate.play;
 				} else if (ctrl.status === 'reverse') {
-					return random() * 0.8;
+					return random() * param.rate.reverse;
 				}
 			})();
+			ctrl.duration = isInit ? mp3.voices[i].duration() : _player.ctrl.duration; // second
 			return ctrl;
 		})();
 		player.outer = (() => {
@@ -139,12 +143,34 @@ function draw() {
 					return _reel.diameter;
 				}
 			})();
-			reel.outer = (() => {
-				const max = player.outer.size.x * 0.07;
-				const iphase = j === 0 ? 0 : PI;
-				const thickness = (cos(frameCount * 0.1 + iphase) + 1) * 0.5 * max;
-				return reel.diameter + thickness;
+			reel.maxThickness = isInit ? player.outer.size.x * 0.1 : _reel.thickness;
+			reel.tapeInc = (() => {
+				if (player.ctrl.status === 'play' || player.ctrl.status === 'reverse') {
+					const totalFrame = player.ctrl.duration * 60;
+					const diff = reel.maxThickness / totalFrame * player.ctrl.rate;
+					const inc = j === 0 ? diff : -diff;
+					return player.ctrl.direction ? inc : -inc;
+				} else if (player.ctrl.status === 'stop') {
+					return 0;
+				} else {
+					return isInit ? 0 : _reel.tapeInc;
+				};
 			})();
+			reel.thickness = (() => { // ここから修正する
+				if (isInit) {
+					if (j === 0) return reel.maxThickness
+					return 0;
+				} else if (player.ctrl.status === 'start' || player.ctrl.status === 'stop') {
+					if (j === 0) return reel.maxThickness
+					return 0;
+				} else if (player.ctrl.status === 'reverse') {
+					if (j === 0) return 0;
+					return reel.maxThickness;
+				} else {
+					return _reel.thickness + reel.tapeInc;
+				}
+			})();
+			reel.outer = reel.diameter + reel.thickness;
 			reel.contact = (() => {
 				const angle = 0.05 * PI;
 				if (j === 0) { // left
@@ -223,10 +249,10 @@ function draw() {
 	debug({
 		param: param.isEnded,
 		nxt: dt.nxt,
-		a: dt.players[0].ctrl.direction,
-		b: dt.players[1].ctrl.direction,
-		c: dt.players[2].ctrl.direction,
-		d: dt.players[3].ctrl.direction,
+		a: dt.players[0].reels[0],
+		b: dt.players[1].reels[0],
+		c: dt.players[2].reels[0],
+		d: dt.players[3].reels[0],
 	});
 	// reset status
 	param.isEnded = [false, false, false, false];
