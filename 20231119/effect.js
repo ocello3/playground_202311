@@ -7,7 +7,8 @@ const playSample = (ctrl, i) => {
 }
 const drawOuter = (outer, colors, i) => () => {
 	stroke(colors.line);
-	fill(colors.outer);
+	// fill(colors.outer);
+	noFill();
 	// strokeWeight(size * 0.005);
 	// stroke(0, 255 / (i * 0.5 + 1));
 	rect(0, 0, outer.size.x, outer.size.y, 10);
