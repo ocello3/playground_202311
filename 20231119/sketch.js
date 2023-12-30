@@ -97,6 +97,30 @@ function draw() {
 			})();
 			return ctrl;
 		})();
+		player.colors = (() => {
+			const colors = {};
+			const base = 255/4 * i
+			const { direction, progress } = player.ctrl;
+			colors.outer = color(
+				direction ? base : 0,
+				50,
+				direction ? 0 : base,
+				progress * 255,
+			);
+			colors.inner = color(
+				direction ? 0 : base,
+				50,
+				direction ? base : 0,
+				progress * 255,
+			);
+			colors.line = color(
+				direction ? base : 0,
+				50,
+				direction ? 0 : base,
+				200,
+			);
+			return colors;
+		})();
 		player.outer = (() => {
 			const outer = {};
 			outer.size = (() => {
