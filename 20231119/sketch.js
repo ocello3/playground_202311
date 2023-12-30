@@ -23,7 +23,7 @@ function preload() {
 function setup() {
 	size = getSize();
 	createCanvas(size, size).parent('canvas');
-	// frameRate();
+	frameRate(10);
 	noLoop();
 }
 
@@ -90,6 +90,11 @@ function draw() {
 				}
 			})();
 			ctrl.duration = isInit ? mp3.voices[i].duration() : _player.ctrl.duration; // second
+			ctrl.progress = (() => { // 0 - 1
+				if (isInit || ctrl.status === 'stop' || ctrl.status === 'start') return 0;
+				if (ctrl.status === 'reverse') return 1;
+				return mp3.voices[i].currentTime() / ctrl.duration;
+			})();
 			return ctrl;
 		})();
 		player.outer = (() => {
@@ -247,12 +252,8 @@ function draw() {
 	// debug
 	text(keyCode, size / 2, size / 2);
 	debug({
-		param: param.isEnded,
-		nxt: dt.nxt,
-		a: dt.players[0].reels[0],
-		b: dt.players[1].reels[0],
-		c: dt.players[2].reels[0],
-		d: dt.players[3].reels[0],
+		status: dt.players[0].ctrl.status,
+		progress: dt.players[0].ctrl.progress,
 	});
 	// reset status
 	param.isEnded = [false, false, false, false];
