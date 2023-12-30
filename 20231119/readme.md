@@ -26,9 +26,9 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - reelの回転速度をrateにして、向きをplay/reverseから決定する。
 - player.ctrl.statusの計算が間違っている気がする。最後のelse ifで前フレームのstatusはkeepなので判別できていなさそう。nxtが配列になっていて、どのindexが再生されているか分からない。条件分岐をシンプルにして解決した。
 - リールのテープの厚みをspeedに紐づける。rateの条件が計算できる？音源の長さに依存する。音源を通常再生で再生した場合の秒数からフレーム数を計算して、それが上限の厚みとなる。→ ctrlにlengthを追加する。→テープの厚みが増えない。→　左のリールと右のリールで増減を逆にする。
+- tapeIncをフレーム数から計算してるけどp5soundのcurrentTimeからprogressを計算して用いる。
 
 # 待ち
-- tapeIncをフレーム数から計算してるけどp5sound
 - 再生中のトラックのレイヤーを前にする。レイヤーの優先順位を配列で管理する。
 - 再生時にmp3が再生されてしまう問題を解決する。
 - alphaを再生が進むに連れて小さくする
