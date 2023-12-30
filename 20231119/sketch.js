@@ -23,7 +23,7 @@ function preload() {
 function setup() {
 	size = getSize();
 	createCanvas(size, size).parent('canvas');
-	frameRate(10);
+	// frameRate(10);
 	noLoop();
 }
 
@@ -149,30 +149,13 @@ function draw() {
 				}
 			})();
 			reel.maxThickness = isInit ? player.outer.size.x * 0.15 : _reel.maxThickness;
-			reel.tapeInc = (() => {
-				if (player.ctrl.status === 'play' || player.ctrl.status === 'reverse') {
-					const totalFrame = player.ctrl.duration * 60;
-					const diff = reel.maxThickness / totalFrame * player.ctrl.rate;
-					const inc = j === 0 ? diff : diff * (-1);
-					return player.ctrl.direction ? inc * (-1) : inc;
-				} else if (player.ctrl.status === 'stop') {
-					return 0;
-				} else {
-					return isInit ? 0 : _reel.tapeInc;
-				};
-			})();
 			reel.thickness = (() => {
-				if (player.ctrl.status === 'start' || player.ctrl.status === 'stop') {
+				if (isInit || player.ctrl.status === 'stop') {
 					if (j === 0) return reel.maxThickness
 					return 0;
-				} else if (isInit) {
-					if (j === 0) return reel.maxThickness
-					return 0;
-				} else if (player.ctrl.status === 'reverse') {
-					if (j === 0) return 0;
-					return reel.maxThickness;
 				} else {
-					return _reel.thickness + reel.tapeInc;
+					if (j === 0) return (1 - player.ctrl.progress) * reel.maxThickness;
+					return player.ctrl.progress * reel.maxThickness;
 				}
 			})();
 			reel.outer = reel.diameter + reel.thickness;
