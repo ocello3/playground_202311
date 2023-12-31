@@ -15,13 +15,14 @@ const drawOuter = (outer, colors, i) => () => {
 }
 const drawReels = (reels, colors, i) => () => {
 	strokeWeight(size * 0.005);
-	fill(colors.inner);
 	reels.forEach((reel) => {
-		stroke(colors.line);
+		stroke(colors.outer);
 		reel.gears.forEach(gear => line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
 		noStroke();
-		circle(reel.mid.x, reel.mid.y, reel.diameter);
+		fill(colors.outer);
 		circle(reel.mid.x, reel.mid.y, reel.outer);
+		fill(colors.inner);
+		circle(reel.mid.x, reel.mid.y, reel.diameter);
 	});
 }
 const drawAnchor = (anchors, colors) => () => {

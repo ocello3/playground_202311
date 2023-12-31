@@ -100,12 +100,11 @@ function draw() {
 		player.colors = (() => {
 			const colors = {};
 			const { status, progress } = player.ctrl;
-			colors.target = isInit ? [color(72, 61, 139), color(218, 165, 32)] : _player.colors.target;
-			colors.base = (isInit || status === 'play') ? lerpColor(colors.target[0], colors.target[1], 0.25 * (i + 1)) : _player.colors.base;
+			colors.base = (isInit || status === 'play') ? lerpColor(color(218, 165, 32), color(72, 61, 139), 0.25 * (i + 1)) : _player.colors.base;
 			colors.outer = colors.base;
-			colors.outer.setAlpha(progress * 10);
+			colors.outer.setAlpha(255 - progress * 255);
 			colors.inner = colors.base;
-			colors.inner.setAlpha(255 - progress * 255);
+			colors.inner.setAlpha(progress * 255);
 			colors.line = colors.base;
 			return colors;
 		})();
