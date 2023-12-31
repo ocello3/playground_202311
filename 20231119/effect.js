@@ -1,6 +1,7 @@
 const playSample = (ctrl, i) => {
 	if (ctrl.status === 'play' || ctrl.status === 'reverse') {
 		mp3.voices[i].rate(ctrl.rate);
+		mp3.voices[i].setVolume(0.7, mp3.voices[i].duration());
 		if (ctrl.status === 'reverse') mp3.voices[i].reverseBuffer();
 		mp3.voices[i].play();
 	}

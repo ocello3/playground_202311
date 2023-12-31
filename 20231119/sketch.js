@@ -15,6 +15,14 @@ function preload() {
 			param.isEnded[i] = true;
 		});
 	});
+	mp3.main = new p5.Gain();
+	mp3.main.amp(0.7);
+	mp3.main.connect();
+	mp3.voices.forEach((voice, i) => {
+		voice.pan(map(i, 0, 3, -1, 1));
+		voice.disconnect();
+		mp3.main.setInput(voice);
+	})
 	mp3.beep = loadSound('assets/beep.mp3');
 	mp3.noise = loadSound('assets/noise.mp3');
 	mp3.pulse = loadSound('assets/pulse.mp3');
