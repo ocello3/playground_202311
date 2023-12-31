@@ -62,7 +62,6 @@ function draw() {
 			const ctrl = {};
 			ctrl.status = (() => {
 				if (isInit) {
-					if (i === 0) return 'play';
 					return 'keep';
 				} else if (param.isEnded[i] === true) {
 					if (_player.ctrl.direction === true) {
@@ -72,6 +71,9 @@ function draw() {
 					}
 				} else if (dt.nxt.some(v => v === i)) {
 					return 'play';
+				} else if (mp3.voices.every(voice => voice.isPlaying() === false)) {
+					if (i === 0) return 'play';
+					return 'keep';
 				} else {
 					return 'keep';
 				}
