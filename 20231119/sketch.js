@@ -9,23 +9,37 @@ let param = {
 }
 
 function preload() {
+	// instruments
 	mp3.voices = [...Array(4)].map((_, i) => {
 		const path = `assets/voice${i}.mp3`;
-		return loadSound(path).onended(() => {
+		const voice = loadSound(path);
+		voice.onended(() => {
 			param.isEnded[i] = true;
 		});
-	});
-	mp3.main = new p5.Gain();
-	mp3.main.amp(0.7);
-	mp3.main.connect();
-	mp3.voices.forEach((voice, i) => {
 		voice.pan(map(i, 0, 3, -1, 1));
 		voice.disconnect();
-		mp3.main.setInput(voice);
-	})
-	mp3.beep = loadSound('assets/beep.mp3');
-	mp3.noise = loadSound('assets/noise.mp3');
-	mp3.pulse = loadSound('assets/pulse.mp3');
+		return voice;
+	});
+	mp3.ses = (() => {
+		const beep = loadSound('assets/beep.mp3');
+		beep.setVolume(0.5);
+		beep.disconnect();
+		const pulse = loadSound('assets/pulse.mp3');
+		pulse.setVolume(0.7);
+		pulse.disconnect();
+		return { beep, pulse };
+	})();
+	// mixer
+	mp3.voiceNode = new p5.Gain();
+	mp3.voices.forEach((voice) => mp3.voiceNode.setInput(voice));
+	mp3.seNode = new p5.Gain();
+	mp3.seNode.setInput(mp3.ses.beep);
+	mp3.seNode.setInput(mp3.ses.pulse);
+	mp3.main = new p5.Gain();
+	mp3.main.amp(0.7);
+	mp3.main.setInput(mp3.voiceNode);
+	mp3.main.setInput(mp3.seNode);
+	mp3.main.connect();
 }
 
 function setup() {

@@ -35,9 +35,9 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - パンをふる
 
 # 待ち
-- reverveかけてみる。
+- voicesを1つのチャンネルにまとめる。
 - endedでseをつける。
-- seにpingpong delayをかける。
+- seを1つのチャンネルにまとめてpingpong delayとreverveをかける。
 - 再生時の音量を取得してテープに波形を表示する。テープを見ても再生方向が分かりにくい。波形表示の向きで区別する
 - gearの色が見えにくいので補色にするか工夫する。alpha値を反転させてもあまり意味がない。
 
