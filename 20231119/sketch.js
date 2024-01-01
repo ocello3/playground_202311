@@ -29,15 +29,20 @@ function preload() {
 		pulse.disconnect();
 		return { beep, pulse };
 	})();
+	// effect
+	mp3.reverb = new p5.Reverb();
+	mp3.reverb.drywet(0.3); // 1 = all reverb, 0 = no reverb
+	mp3.reverb.disconnect();
 	// mixer
 	mp3.voiceNode = new p5.Gain();
 	mp3.voices.forEach((voice) => mp3.voiceNode.setInput(voice));
+	mp3.reverb.process(mp3.voiceNode, 3, 2);
 	mp3.seNode = new p5.Gain();
 	mp3.seNode.setInput(mp3.ses.beep);
 	mp3.seNode.setInput(mp3.ses.pulse);
 	mp3.main = new p5.Gain();
 	mp3.main.amp(0.7);
-	mp3.main.setInput(mp3.voiceNode);
+	mp3.main.setInput(mp3.reverb);
 	mp3.main.setInput(mp3.seNode);
 	mp3.main.connect();
 }

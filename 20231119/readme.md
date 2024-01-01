@@ -33,13 +33,14 @@ GENUARYのPerfect loop / Infinite loop / endless GIFsから始めた。Loopと�
 - 4トラックに分ける。
 - 音量の調節（全部0は大きすぎる）
 - パンをふる
-
-# 待ち
 - voicesを1つのチャンネルにまとめる。
 - endedでseをつける。
-- seを1つのチャンネルにまとめてpingpong delayとreverveをかける。
+- voicesNodeにreverveをかけて音量を調節する。
+
+# 待ち
 - 再生時の音量を取得してテープに波形を表示する。テープを見ても再生方向が分かりにくい。波形表示の向きで区別する
 - gearの色が見えにくいので補色にするか工夫する。alpha値を反転させてもあまり意味がない。
+- 再生速度（rate）をrandomのパラメータを工夫する
 
 # 再生の管理
 play, reverse, stopの3つの状態を遷移する。
