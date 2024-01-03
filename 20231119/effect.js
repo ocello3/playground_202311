@@ -47,12 +47,21 @@ const drawTape = (reels, anchors, colors) => () => {
 	});
 	line(anchors[0].bottom.x, anchors[0].bottom.y, anchors[1].bottom.x, anchors[1].bottom.y);
 }
+const drawWave = (wave) => () => {
+	rectMode(CENTER);
+	noStroke();
+	wave.poses.forEach((pos, j) => {
+		fill(0, wave.alphas[j]);
+		rect(pos.x, pos.y, wave.sizes[j].x, wave.sizes[j].y);
+	});
+}
 const drawPlayer = (player, i) => () => {
-	const { outer, reels, anchors, ctrl, colors } = player;
+	const { outer, reels, anchors, ctrl, colors, wave } = player;
 	translate(outer.margin);
 	playSample(ctrl, i);
 	pp(drawOuter(outer, colors, i));
 	pp(drawReels(reels, colors, i));
 	pp(drawAnchor(anchors, colors));
 	pp(drawTape(reels, anchors, colors));
+	pp(drawWave(wave));
 }

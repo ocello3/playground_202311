@@ -50,6 +50,13 @@ function preload() {
 function setup() {
 	size = getSize();
 	createCanvas(size, size).parent('canvas');
+	// analyzer
+	mp3.analyzers = [...Array(4)].map(() => {
+		const analyzer = new p5.Amplitude();
+		analyzer.toggleNormalize(true);
+		return analyzer;
+	});
+	mp3.voices.forEach((voice, i) => mp3.analyzers[i].setInput(voice));
 	// frameRate(10);
 	noLoop();
 }
@@ -268,6 +275,31 @@ function draw() {
 			})();
 			return anchor;
 		});
+		player.wave = (() => {
+			const wave = {};
+			const { status } = player.ctrl;
+			const currentHeight =  mp3.analyzers[i].getLevel() * size * 0.05;
+			const rectWidth = size * 0.01;
+			const num = 10;
+			wave.sizes = isInit
+				? [...Array(num)].map((_, j) => {
+					if (j === 0) return new p5.Vector(rectWidth, currentHeight);
+					return new p5.Vector(0, 0);
+				})
+				: _player.wave.sizes.map((_, j, self) => {
+					if (j === 0) return new p5.Vector(rectWidth, currentHeight);
+					return self[j - 1];
+				});
+			wave.poses = (isInit || status === 'play' || status === 'reverse')
+				? wave.sizes.map((_, j) => {
+					const mid = p5.Vector.div(p5.Vector.add(player.anchors[0].bottom, player.anchors[1].bottom), 2);
+					const diff = player.ctrl.direction ? -rectWidth : rectWidth;
+					return p5.Vector.add(mid, new p5.Vector(diff * j, 0));
+				})
+				: _player.wave.poses;
+				wave.alphas = isInit ? wave.sizes.map((_, j) => 255 - ((255/num)*j)) : _player.wave.alphas;
+		return wave;
+		})();
 		return player;
 	});
 	dt.players.forEach((player, i) => pp(drawPlayer(player, i)));
