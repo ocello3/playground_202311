@@ -136,12 +136,16 @@ function draw() {
 		player.colors = (() => {
 			const colors = {};
 			const { status, progress } = player.ctrl;
-			colors.base = (isInit || status === 'play') ? lerpColor(color(218, 165, 32), color(72, 61, 139), 0.25 * (i + 1)) : _player.colors.base;
-			colors.outer = colors.base;
-			colors.outer.setAlpha(255 - progress * 255);
-			colors.inner = colors.base;
-			colors.inner.setAlpha(progress * 255);
-			colors.line = colors.base;
+			colors.base = (() => {
+				if (isInit || status === 'play') {
+					const baseColor = lerpColor(color(218, 165, 32), color(72, 61, 139), 0.25 * (i + 1));
+					return [red(baseColor), green(baseColor), blue(baseColor)];
+				}
+				return _player.colors.base;
+			})();
+			colors.outer = color(...colors.base, 255 - progress * 255);
+			colors.inner = color(...colors.base, progress * 255);
+			colors.line = color(...colors.base, 255 - progress * 255);
 			return colors;
 		})();
 		player.outer = (() => {
@@ -297,7 +301,10 @@ function draw() {
 					return p5.Vector.add(mid, new p5.Vector(diff * j, 0));
 				})
 				: _player.wave.poses;
-				wave.alphas = isInit ? wave.sizes.map((_, j) => 255 - ((255/num)*j)) : _player.wave.alphas;
+			wave.colors = wave.sizes.map((_, j) => {
+				const alpha = 255 - ((255 / num) * j);
+				return color(...player.colors.base, alpha);
+			});
 		return wave;
 		})();
 		return player;

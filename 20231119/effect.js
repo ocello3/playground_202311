@@ -51,7 +51,7 @@ const drawWave = (wave) => () => {
 	rectMode(CENTER);
 	noStroke();
 	wave.poses.forEach((pos, j) => {
-		fill(0, wave.alphas[j]);
+		fill(wave.colors[j]);
 		rect(pos.x, pos.y, wave.sizes[j].x, wave.sizes[j].y);
 	});
 }
