@@ -279,6 +279,18 @@ function draw() {
 			})();
 			return anchor;
 		});
+		player.centerline = (() => {
+			if (!isInit) return _player.centerline;
+			const centerline = {};
+			const mid = p5.Vector.div(
+				p5.Vector.add(player.anchors[0].bottom, player.anchors[1].bottom),
+				2);
+			const length = size * 0.03;
+			const diff = createVector(0, length * 0.5);
+			centerline.upper = p5.Vector.add(mid, diff);
+			centerline.lower = p5.Vector.sub(mid, diff);
+			return centerline;
+		})();
 		player.wave = (() => {
 			const wave = {};
 			const { status } = player.ctrl;

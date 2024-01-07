@@ -47,6 +47,10 @@ const drawTape = (reels, anchors, colors) => () => {
 	});
 	line(anchors[0].bottom.x, anchors[0].bottom.y, anchors[1].bottom.x, anchors[1].bottom.y);
 }
+const drawCenter = (centerline, colors) => () => {
+	stroke(colors.line);
+	line(centerline.upper.x, centerline.upper.y, centerline.lower.x, centerline.lower.y);
+}
 const drawWave = (wave) => () => {
 	rectMode(CENTER);
 	noStroke();
@@ -56,7 +60,7 @@ const drawWave = (wave) => () => {
 	});
 }
 const drawPlayer = (player, i) => () => {
-	const { outer, reels, anchors, ctrl, colors, wave } = player;
+	const { outer, reels, anchors, ctrl, colors, wave, centerline } = player;
 	translate(outer.margin);
 	playSample(ctrl, i);
 	pp(drawOuter(outer, colors, i));
@@ -64,4 +68,5 @@ const drawPlayer = (player, i) => () => {
 	pp(drawAnchor(anchors, colors));
 	pp(drawTape(reels, anchors, colors));
 	pp(drawWave(wave));
+	pp(drawCenter(centerline, colors));
 }
