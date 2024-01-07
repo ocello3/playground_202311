@@ -123,6 +123,10 @@ function draw() {
 					return random() * param.rate.play;
 				} else if (ctrl.status === 'reverse') {
 					return random() * param.rate.reverse;
+				} else if (isInit) {
+					return 0;
+				} else {
+					return _player.ctrl.rate;
 				}
 			})();
 			ctrl.duration = isInit ? mp3.voices[i].duration() : _player.ctrl.duration; // second
@@ -294,7 +298,7 @@ function draw() {
 		player.wave = (() => {
 			const wave = {};
 			const { status } = player.ctrl;
-			const currentHeight =  mp3.analyzers[i].getLevel() * size * 0.05;
+			const currentHeight = mp3.analyzers[i].getLevel() * size * 0.05;
 			const rectWidth = size * 0.01;
 			const num = 10;
 			wave.sizes = isInit
@@ -317,7 +321,31 @@ function draw() {
 				const alpha = 255 - ((255 / num) * j);
 				return color(...player.colors.base, alpha);
 			});
-		return wave;
+			return wave;
+		})();
+		player.texts = (() => {
+			const texts = {};
+			const direction = player.ctrl.direction ? 'play>>>' : 'reverse<<<';
+			const status = mp3.voices[i].isPlaying() ? direction: 'stop';
+			texts.size = size * 0.02;
+			texts.statusString = `status: ${status}`;
+			texts.statusPos = (() => {
+				if (!isInit) return _player.texts.statusPos;
+				return createVector(size * 0.01, player.outer.size.y - size * 0.02);
+			})();
+			const rateVal = (() => {
+				const val = Math.round(player.ctrl.rate * 10) / 10;
+				if (status === 'stop') return 'n/a';
+				if (player.ctrl.direction) return `${val}`;
+				return `-${val}`;
+			})();
+			texts.rateString = `rate: ${rateVal}`;
+			texts.ratePos = (() => {
+				if (!isInit) return _player.texts.ratePos;
+				const diff = createVector(0, size * 0.02);
+				return p5.Vector.sub(texts.statusPos, diff);
+			})();
+			return texts;
 		})();
 		return player;
 	});

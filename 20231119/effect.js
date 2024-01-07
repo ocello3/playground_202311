@@ -59,8 +59,15 @@ const drawWave = (wave) => () => {
 		rect(pos.x, pos.y, wave.sizes[j].x, wave.sizes[j].y);
 	});
 }
+const drawText = (texts, colors) => () => {
+	textSize(texts.size);
+	textAlign(LEFT, BOTTOM);
+	fill(color([...colors.base]));
+	text(texts.statusString, texts.statusPos.x, texts.statusPos.y);
+	text(texts.rateString, texts.ratePos.x, texts.ratePos.y);
+}
 const drawPlayer = (player, i) => () => {
-	const { outer, reels, anchors, ctrl, colors, wave, centerline } = player;
+	const { outer, reels, anchors, ctrl, colors, wave, centerline, texts } = player;
 	translate(outer.margin);
 	playSample(ctrl, i);
 	pp(drawOuter(outer, colors, i));
@@ -69,4 +76,5 @@ const drawPlayer = (player, i) => () => {
 	pp(drawTape(reels, anchors, colors));
 	pp(drawWave(wave));
 	pp(drawCenter(centerline, colors));
+	pp(drawText(texts, colors));
 }
