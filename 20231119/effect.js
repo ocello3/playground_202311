@@ -13,11 +13,13 @@ const playSample = (ctrl, i) => {
 		}
 	}
 }
-const drawOuter = (outer, colors, i) => () => {
-	stroke(colors.inner);
-	fill(colors.inner);
-	// strokeWeight(size * 0.005);
-	// stroke(0, 255 / (i * 0.5 + 1));
+const drawOuter = (outer, colors, ctrl, i) => () => {
+	fill(colors.inner)
+	if (ctrl.status === 'play' || ctrl.status === 'reverse') {
+		stroke(255);
+	} else {
+		stroke(colors.inner);
+	}
 	rect(0, 0, outer.size.x, outer.size.y, 10);
 }
 const drawReels = (reels, colors, i) => () => {
@@ -69,7 +71,7 @@ const drawPlayer = (player, i) => () => {
 	translate(outer.margin);
 	strokeWeight(size * 0.003);
 	playSample(ctrl, i);
-	pp(drawOuter(outer, colors, i));
+	pp(drawOuter(outer, colors, ctrl, i));
 	pp(drawReels(reels, colors, i));
 	pp(drawAnchor(anchors, colors));
 	pp(drawTape(reels, anchors, colors));
