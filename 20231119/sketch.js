@@ -3,8 +3,14 @@ let size = {}, mp3 = {}, dt = {};
 let param = {
 	isEnded: [false, false, false, false],
 	rate: {
-		play: 2,
-		reverse: 0.8,
+		play: {
+			min: 0.5,
+			max: 1.5,
+		},
+		reverse: {
+			min: 0.2,
+			max: 0.8,
+		},
 	}
 }
 
@@ -120,9 +126,9 @@ function draw() {
 			})();
 			ctrl.rate = (() => {
 				if (ctrl.status === 'play') {
-					return random() * param.rate.play;
+					return random(param.rate.play.min, param.rate.play.max);
 				} else if (ctrl.status === 'reverse') {
-					return random() * param.rate.reverse;
+					return random(param.rate.reverse.min, param.rate.reverse.max);
 				} else if (isInit) {
 					return 0;
 				} else {
@@ -352,19 +358,8 @@ function draw() {
 	dt.players.forEach((player, i) => pp(drawPlayer(player, i)));
 	drawFrame(size, size);
 	// debug
-	text(keyCode, size / 2, size / 2);
-	debug({
-		status: dt.players[0].ctrl.status,
-		progress: dt.players[0].ctrl.progress,
-	});
+	debug();
 	// reset status
 	param.isEnded = [false, false, false, false];
 	if (isInit) isInit = false;
-}
-
-function keyPressed() {
-	if (key === '1') mp3.voices[0].play();
-	if (key === '1') mp3.voices[1].play();
-	if (key === '2') mp3.voices[2].play();
-	if (key === '3') mp3.voices[3].play();
 }
