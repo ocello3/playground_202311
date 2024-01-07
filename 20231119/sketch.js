@@ -147,9 +147,9 @@ function draw() {
 				}
 				return _player.colors.base;
 			})();
-			colors.outer = color(...colors.base, 255 - progress * 255);
-			colors.inner = color(...colors.base, progress * 255);
-			colors.line = color(...colors.base, 255 - progress * 255);
+			colors.outer = color(...colors.base, 255 - progress * 55);
+			colors.inner = color(...colors.base, 30 + progress * 55);
+			colors.line = color(...colors.base, 255 - progress * 55);
 			return colors;
 		})();
 		player.outer = (() => {
@@ -198,12 +198,12 @@ function draw() {
 			reel.angle = isInit ? 0 : _reel.angle + reel.rotate;
 			reel.diameter = (() => {
 				if (isInit) {
-					return player.outer.size.x * 0.17;
+					return player.outer.size.x * 0.1;
 				} else {
 					return _reel.diameter;
 				}
 			})();
-			reel.maxThickness = isInit ? player.outer.size.x * 0.15 : _reel.maxThickness;
+			reel.maxThickness = isInit ? player.outer.size.x * 0.2 : _reel.maxThickness;
 			reel.thickness = (() => {
 				if (isInit || player.ctrl.status === 'stop') {
 					if (j === 0) return reel.maxThickness
@@ -298,8 +298,8 @@ function draw() {
 		player.wave = (() => {
 			const wave = {};
 			const { status } = player.ctrl;
-			const currentHeight = mp3.analyzers[i].getLevel() * size * 0.05;
-			const rectWidth = size * 0.01;
+			const currentHeight = mp3.analyzers[i].getLevel() * size * 0.08;
+			const rectWidth = size * 0.007;
 			const num = 10;
 			wave.sizes = isInit
 				? [...Array(num)].map((_, j) => {

@@ -14,30 +14,28 @@ const playSample = (ctrl, i) => {
 	}
 }
 const drawOuter = (outer, colors, i) => () => {
-	stroke(colors.line);
-	// fill(colors.outer);
-	noFill();
+	stroke(colors.inner);
+	fill(colors.inner);
 	// strokeWeight(size * 0.005);
 	// stroke(0, 255 / (i * 0.5 + 1));
 	rect(0, 0, outer.size.x, outer.size.y, 10);
 }
 const drawReels = (reels, colors, i) => () => {
-	strokeWeight(size * 0.005);
 	reels.forEach((reel) => {
-		stroke(colors.outer);
-		reel.gears.forEach(gear => line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
 		noStroke();
 		fill(colors.outer);
 		circle(reel.mid.x, reel.mid.y, reel.outer);
-		fill(colors.inner);
+		fill(255);
+		stroke(colors.line);
 		circle(reel.mid.x, reel.mid.y, reel.diameter);
+		reel.gears.forEach(gear => line(gear.start.x, gear.start.y, gear.end.x, gear.end.y));
 	});
 }
 const drawAnchor = (anchors, colors) => () => {
 	noStroke();
-	fill(colors.inner);
+	fill(colors.line);
 	anchors.forEach((anchor) => {
-		circle(anchor.mid.x, anchor.mid.y, anchor.diameter);
+		circle(anchor.mid.x, anchor.mid.y, anchor.diameter * 1.1);
 	})
 }
 const drawTape = (reels, anchors, colors) => () => {
@@ -69,6 +67,7 @@ const drawText = (texts, colors) => () => {
 const drawPlayer = (player, i) => () => {
 	const { outer, reels, anchors, ctrl, colors, wave, centerline, texts } = player;
 	translate(outer.margin);
+	strokeWeight(size * 0.003);
 	playSample(ctrl, i);
 	pp(drawOuter(outer, colors, i));
 	pp(drawReels(reels, colors, i));
