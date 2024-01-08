@@ -64,6 +64,7 @@ function setup() {
 	});
 	mp3.voices.forEach((voice, i) => mp3.analyzers[i].setInput(voice));
 	// frameRate(10);
+	noCursor();
 	noLoop();
 }
 
@@ -193,7 +194,7 @@ function draw() {
 				}
 			})();
 			reel.rotate = (() => {
-				const velocity = player.ctrl.rate * 0.5;
+				const velocity = player.ctrl.rate * 0.07;
 				if (player.ctrl.status === 'play') return velocity;
 				if (player.ctrl.status === 'reverse') return -1 * velocity;
 				if (isInit) return 0;
