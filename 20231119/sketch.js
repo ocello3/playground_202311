@@ -357,6 +357,12 @@ function draw() {
 		return player;
 	});
 	dt.players.forEach((player, i) => pp(drawPlayer(player, i)));
+	// draw cursor
+	pp(() => {
+		stroke(100, 100);
+		line(mouseX, 0, mouseX, size);
+		line(0, mouseY, size, mouseY);
+	});
 	drawFrame(size, size);
 	// debug
 	debug();
