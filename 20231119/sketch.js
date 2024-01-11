@@ -362,6 +362,9 @@ function draw() {
 		stroke(100, 100);
 		line(mouseX, 0, mouseX, size);
 		line(0, mouseY, size, mouseY);
+		textAlign(RIGHT, BOTTOM)
+		fill(0);
+		text(`x: ${floor(mouseX/size*100)}%, y: ${floor(mouseY/size*100)}%`, size * 0.99, size * 0.99);
 	});
 	drawFrame(size, size);
 	// debug
