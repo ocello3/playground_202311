@@ -356,7 +356,7 @@ function draw() {
 		})();
 		return player;
 	});
-	dt.players.forEach((player, i) => pp(drawPlayer(player, i)));
+	dt.players.forEach((player, i) => pp(drawPlayer(player, size, i)));
 	// draw cursor
 	pp(() => {
 		stroke(100, 100);

@@ -1,4 +1,4 @@
-const playSample = (ctrl, i) => {
+const playSample = (ctrl, size, i) => {
 	if (ctrl.status === 'play' || ctrl.status === 'reverse') {
 		mp3.voices[i].rate(ctrl.rate);
 		if (ctrl.status === 'reverse') mp3.voices[i].reverseBuffer();
@@ -11,6 +11,7 @@ const playSample = (ctrl, i) => {
 			mp3.ses.pulse.pan(map(i, 0, 3, -1, 1));
 			mp3.ses.pulse.play();
 		}
+		mp3.reverb.drywet(mouseX/size);
 	}
 }
 const drawOuter = (outer, colors, ctrl, i) => () => {
@@ -66,11 +67,11 @@ const drawText = (texts, colors) => () => {
 	text(texts.statusString, texts.statusPos.x, texts.statusPos.y);
 	text(texts.rateString, texts.ratePos.x, texts.ratePos.y);
 }
-const drawPlayer = (player, i) => () => {
+const drawPlayer = (player, size, i) => () => {
 	const { outer, reels, anchors, ctrl, colors, wave, centerline, texts } = player;
 	translate(outer.margin);
 	strokeWeight(size * 0.003);
-	playSample(ctrl, i);
+	playSample(ctrl, size, i);
 	pp(drawOuter(outer, colors, ctrl, i));
 	pp(drawReels(reels, colors, i));
 	pp(drawAnchor(anchors, colors));
