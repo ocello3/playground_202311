@@ -364,7 +364,7 @@ function draw() {
 		line(0, mouseY, size, mouseY);
 		textAlign(RIGHT, BOTTOM)
 		fill(0);
-		text(`x: ${floor(mouseX/size*100)}%, y: ${floor(mouseY/size*100)}%`, size * 0.99, size * 0.99);
+		text(`x(drywet): ${floor(mouseX/size*100)/100}, y(sec): ${floor(mouseY/size*10)}`, size * 0.99, size * 0.99);
 	});
 	drawFrame(size, size);
 	// debug

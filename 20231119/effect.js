@@ -12,6 +12,7 @@ const playSample = (ctrl, size, i) => {
 			mp3.ses.pulse.play();
 		}
 		mp3.reverb.drywet(mouseX/size);
+		mp3.reverb.set(map(mouseY/size, 0, 1, 0, 10));
 	}
 }
 const drawOuter = (outer, colors, ctrl, i) => () => {
