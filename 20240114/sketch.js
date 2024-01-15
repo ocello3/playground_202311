@@ -13,6 +13,26 @@ function setup() {
 }
 
 function draw() {
+	_spirals = isInit ? [...Array(10)] : dt.spirals;
+	dt.spirals = _spirals.map((_spiral, i) => {
+		const spiral = {};
+		spiral.angle = (() => {
+			// reset when _radius over max
+		})();
+		spiral.a = (() => {
+			// reset when angle === 0
+		})();
+		spiral.b = (() => {
+			// reset when angle === 0
+		})();
+		spiral.radius = (() => {
+			// determind by angle
+		})();
+		spiral.mid = (() => {
+			// reset when angle === 0
+		})();
+		return spiral;
+	})
 	background(255);
 	drawFrame(size, size);
 	// debug
