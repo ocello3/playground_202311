@@ -15,6 +15,7 @@ function setup() {
 function draw() {
 	_spirals = isInit ? [...Array(10)] : dt.spirals;
 	dt.spirals = _spirals.map((_spiral, i) => {
+		// todo: consider reduceing angle from max
 		const spiral = {};
 		const maxRadius = size * 1 / 3
 		const maxAngle = isInit ? 1000 : 150 * _spiral.rotate;
@@ -55,7 +56,25 @@ function draw() {
 			});
 		})();
 		return spiral;
-	})
+	});
+	dt.connections = (() => {
+		const connections = [];
+		dt.spirals.forEach((spiral, i) => {
+			dt.spirals.forEach((_spiral, _i) => {
+				if (i > _i) {
+					const length = p5.Vector.dist(spiral.head, _spiral.head);
+					if (length < size * 0.1) {
+						connections.push({
+							id_1: i,
+							id_2: _i,
+							length,
+						});
+					}
+				}
+			});
+		});
+		return connections;
+	})();
 	background(255);
 	drawSpirals();
 	drawFrame(size, size);
