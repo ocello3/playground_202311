@@ -49,7 +49,7 @@ function draw() {
 		})();
 		spiral.head = p5.Vector.add(spiral.mid, p5.Vector.fromAngle(spiral.angle, spiral.radius));
 		spiral.positions = (() => {
-			if (isReset) return [...Array(5)].map(() => spiral.head);
+			if (isReset) return [...Array(10)].map(() => spiral.head);
 			return _spiral.positions.map((_pos, i) => {
 				if (i === 0) return spiral.head;
 				return _spiral.positions[i - 1];
@@ -63,7 +63,7 @@ function draw() {
 			dt.spirals.forEach((_spiral, _i) => {
 				if (i > _i) {
 					const length = p5.Vector.dist(spiral.head, _spiral.head);
-					if (length < size * 0.1) {
+					if (length < size * 0.1) { // todo: move to params
 						connections.push({
 							id_1: i,
 							id_2: _i,
