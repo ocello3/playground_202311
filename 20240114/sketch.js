@@ -23,7 +23,7 @@ function draw() {
 		spiral.rotate = isReset ? random(0.01, 0.1) : _spiral.rotate;
 		spiral.angle = (() => {
 			if (isReset) return 0;
-			return _spiral.angle + 0.01; // todo change speed from 1
+			return _spiral.angle + spiral.rotate;
 		})();
 		spiral.a = (() => { // > 0
 			if (!isReset) return _spiral.a;
