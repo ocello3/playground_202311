@@ -47,6 +47,13 @@ function draw() {
 			return p5.Vector.add(base, diff);
 		})();
 		spiral.head = p5.Vector.add(spiral.mid, p5.Vector.fromAngle(spiral.angle, spiral.radius));
+		spiral.positions = (() => {
+			if (isReset) return [...Array(5)].map(() => spiral.head);
+			return _spiral.positions.map((_pos, i) => {
+				if (i === 0) return spiral.head;
+				return _spiral.positions[i - 1];
+			});
+		})();
 		return spiral;
 	})
 	background(255);
