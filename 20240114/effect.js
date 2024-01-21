@@ -15,6 +15,12 @@ function drawSpirals() {
 		dt.connections.forEach((connection) => {
 			const { id_1, id_2, dist} = connection;
 			line(dt.spirals[id_1].head.x, dt.spirals[id_1].head.y, dt.spirals[id_2].head.x, dt.spirals[id_2].head.y);
+			snd.fms[id_2].mod.freq(connection.modFreq);
+			snd.fms[id_2].mod.amp(connection.modIndex);
+			snd.fms[id_2].car.amp(connection.amp);
 		});
 	}
+	dt.isUpdates.forEach((isUpdate, i) => {
+		if (!isUpdate) snd.fms[i].car.amp(0);
+	});
 }
