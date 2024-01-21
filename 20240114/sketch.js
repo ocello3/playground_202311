@@ -17,22 +17,22 @@ function draw() {
 	dt.spirals = _spirals.map((_spiral, i) => {
 		// todo: consider reduceing angle from max
 		const spiral = {};
-		const maxRadius = size * 1 / 3
-		const maxAngle = isInit ? 1000 : 150 * _spiral.rotate;
+		const maxRadius = size * 1 / 2
+		const maxAngle = isInit ? 1000 : 1000 * _spiral.rotate;
 		const isReset = isInit ? true : _spiral.angle > maxAngle;
 		spiral.progress = isInit ? 0 : 1 - (maxAngle - _spiral.angle) / maxAngle;
-		spiral.rotate = isReset ? random(0.01, 0.1) : _spiral.rotate;
+		spiral.rotate = isReset ? random(0.005, 0.05) : _spiral.rotate; // todo find min/max
 		spiral.angle = (() => {
 			if (isReset) return 0;
 			return _spiral.angle + spiral.rotate;
 		})();
 		spiral.a = (() => { // > 0
 			if (!isReset) return _spiral.a;
-			return maxRadius * random(0.01, 0.03); // todo find min/max
+			return maxRadius * random(0.01, 0.04); // todo find min/max
 		})();
 		spiral.b = (() => { 
 			if (!isReset) return _spiral.a;
-			return random(-10, 10); // todo find min/max
+			return random(-15, 15); // todo find min/max
 		})();
 		spiral.radius = (() => {
 			/*r=ae^{b\theta} */
@@ -63,7 +63,7 @@ function draw() {
 			dt.spirals.forEach((_spiral, _i) => {
 				if (i > _i) {
 					const length = p5.Vector.dist(spiral.head, _spiral.head);
-					if (length < size * 0.1) { // todo: move to params
+					if (length < size * 0.13) { // todo: move to params
 						connections.push({
 							id_1: i,
 							id_2: _i,
