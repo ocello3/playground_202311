@@ -18,10 +18,10 @@ function setup() {
 		fm.freq = 100 * i; // todo: change
 		fm.car = new p5.Oscillator('sine'); // todo: change to random
 		fm.car.amp(0);
-		fm.car.freq(freq);
+		fm.car.freq(fm.freq);
 		fm.car.start();
 		fm.mod = new p5.Oscillator('sine'); // todo: change to random
-		fm.mod.disonnect();
+		fm.mod.disconnect();
 		fm.mod.start();
 		fm.car.freq(fm.mod);
 		return fm;
@@ -81,14 +81,15 @@ function draw() {
 			dt.spirals.forEach((_spiral, _i) => {
 				if (i > _i) {
 					const length = p5.Vector.dist(spiral.head, _spiral.head);
-					if (length < connectLimit) {
+					if (length < params.connectLimit) {
 						const connection = {};
 						connection.id_1 = i;
 						connection.id_2 = _i;
 						connection.length = length;
 						connection.modFreq = snd.fms[_i].freq;
-						connection.modIndex = map(length, 0, connectLimit, 100, 10);
-						connection.amp = map(length, 0, connectLimit, 0.8 / params.count, 0);
+						connection.modIndex = map(length, 0, params.connectLimit, 100, 10);
+						// connection.pan = map()
+						connection.amp = map(length, 0, params.connectLimit, 0.8 / params.count, 0);
 						connections.push(connection);
 					}
 				}
@@ -99,7 +100,7 @@ function draw() {
 	const sndIds = dt.connections.map(connection => connection.id_2);
 	dt.isUpdates = (() => {
 		if (isInit) return [...Array(params.count)].map(() => true);
-		return dt.stayIds.map((_, i) => sndIds.includs(i));
+		return dt.isUpdates.map((_, i) => sndIds.includes(i));
 	})();
 	background(255);
 	drawSpirals();
