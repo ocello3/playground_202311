@@ -15,7 +15,7 @@ function setup() {
 	}
 	snd.fms = [...Array(params.count)].map((_, i) => {
 		const fm = {};
-		fm.freq = 100 * i; // todo: change
+		fm.freq = 110 * i; // todo: change
 		fm.car = new p5.Oscillator('sine'); // todo: change to random
 		fm.car.amp(0);
 		fm.car.freq(fm.freq);
@@ -105,7 +105,7 @@ function draw() {
 		if (isInit) return [...Array(params.count)].map(() => true);
 		return dt.isUpdates.map((_, i) => sndIds.includes(i));
 	})();
-	background(255);
+	background(255, 120);
 	drawSpirals();
 	drawFrame(size, size);
 	// debug
