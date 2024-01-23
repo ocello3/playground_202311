@@ -8,6 +8,12 @@ function drawSpirals() {
 				line(pos.x, pos.y, spiral.positions[j + 1].x, spiral.positions[j + 1].y);
 			}
 		});
+		if(dt.isUpdates[i] === false) {
+			snd.fms[i].mod.freq(spiral.modFreq);
+			snd.fms[i].mod.amp(spiral.modIndex);
+			snd.fms[i].car.amp(spiral.amp);
+			snd.fms[i].car.pan(spiral.pan);
+		}
 	});
 	strokeWeight(size * 0.001);
 	stroke(50);
@@ -18,9 +24,7 @@ function drawSpirals() {
 			snd.fms[id_2].mod.freq(connection.modFreq);
 			snd.fms[id_2].mod.amp(connection.modIndex);
 			snd.fms[id_2].car.amp(connection.amp);
+			snd.fms[id_2].car.pan(dt.spirals[id_2].pan);
 		});
 	}
-	dt.isUpdates.forEach((isUpdate, i) => {
-		if (!isUpdate) snd.fms[i].car.amp(0);
-	});
 }

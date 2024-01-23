@@ -73,6 +73,10 @@ function draw() {
 				return _spiral.positions[i - 1];
 			});
 		})();
+		spiral.modFreq = 1500; // todo: change later
+		spiral.modIndex = map(constrain(spiral.head.y, 0, size), 0, size, 10, 100);
+		spiral.amp = map(constrain(spiral.head.y, 0, size), 0, size, 0, 0.1 / params.count);
+		spiral.pan = map(constrain(spiral.head.x, 0, size), 0, size, -1, 1);
 		return spiral;
 	});
 	dt.connections = (() => {
@@ -88,8 +92,7 @@ function draw() {
 						connection.length = length;
 						connection.modFreq = snd.fms[_i].freq;
 						connection.modIndex = map(length, 0, params.connectLimit, 100, 10);
-						// connection.pan = map()
-						connection.amp = map(length, 0, params.connectLimit, 0.8 / params.count, 0);
+						connection.amp = map(length, 0, params.connectLimit, 0.8 / params.count, 0.3 / params.count);
 						connections.push(connection);
 					}
 				}
@@ -106,7 +109,7 @@ function draw() {
 	drawSpirals();
 	drawFrame(size, size);
 	// debug
-	debug(dt.spirals[0]);
+	debug();
 	// reset status
 	if (isInit) isInit = false;
 }
