@@ -1,10 +1,10 @@
 function drawSpirals() {
 	dt.spirals.forEach((spiral, i) => {
-		strokeWeight(size * 0.005);
+		strokeWeight(size * 0.02);
 		const length = spiral.positions.length;
 		spiral.positions.forEach((pos, j) => {
 			if (j < length - 1) {
-				stroke(255 * spiral.progress * (1 - (length - j)/length));
+				stroke(42, 79, 110, 255 * spiral.progress * (length - j)/length);
 				line(pos.x, pos.y, spiral.positions[j + 1].x, spiral.positions[j + 1].y);
 			}
 		});
@@ -16,7 +16,7 @@ function drawSpirals() {
 		}
 	});
 	strokeWeight(size * 0.001);
-	stroke(50);
+	stroke(78, 112, 139, 250);
 	if (dt.connections.length) {
 		dt.connections.forEach((connection) => {
 			const { id_1, id_2, dist} = connection;

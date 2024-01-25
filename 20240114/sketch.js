@@ -70,7 +70,8 @@ function draw() {
 			if (isReset) return [...Array(10)].map(() => spiral.head);
 			return _spiral.positions.map((_pos, i) => {
 				if (i === 0) return spiral.head;
-				return _spiral.positions[i - 1];
+				if (frameCount % 4 === 0) return _spiral.positions[i - 1];
+				return _spiral.positions[i];
 			});
 		})();
 		spiral.modFreq = 1500; // todo: change later
@@ -105,7 +106,12 @@ function draw() {
 		if (isInit) return [...Array(params.count)].map(() => true);
 		return dt.isUpdates.map((_, i) => sndIds.includes(i));
 	})();
-	background(255, 120);
+	background(255);
+	noStroke();
+	for (let i = 0; i < params.count; i++) {
+		fill(216, 229, 240, 255 / params.count * i);
+		rect(0, size / params.count * i, size, size / params.count)
+	}
 	drawSpirals();
 	drawFrame(size, size);
 	// debug
