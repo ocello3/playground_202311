@@ -1,3 +1,4 @@
+import {Pane} from './path/to/tweakpane-4.0.3.min.js';
 let isInit = true;
 let size, dt = {};
 let snd = {};
