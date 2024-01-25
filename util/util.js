@@ -1,11 +1,12 @@
-function mouseClicked() {
-	userStartAudio();
-	loop();
-}
-
-function touchStarted() {
-	userStartAudio();
-	loop();
+export const defalt = s => {
+	s.mouseClicked = () => {
+		s.userStartAudio();
+		s.loop();
+	}
+	s.touchStarted = () => {
+		s.userStartAudio();
+		s.loop();
+	}
 }
 
 // debug
@@ -110,24 +111,25 @@ const addDataToStringArray = (
 };
 
 /**
- * 
+ * @param {p5} s 
  * @param {*} arg 
  * @param {*} displayArrayLength 
  * @param {*} startPosition 
  */
-const debug = (
+export const debug = (
+	s,
 	arg,
 	displayArrayLength = null,
 	startPosition = 0
 ) => {
 	// header
 	const frameRateWarning = (() => {
-		if (frameRate() > 50) return "more than 50";
-		if (frameRate() > 40) return "less than 50";
-		if (frameRate() > 30) return "less than 40";
+		if (s.frameRate() > 50) return "more than 50";
+		if (s.frameRate() > 40) return "less than 50";
+		if (s.frameRate() > 30) return "less than 40";
 		return "less than 30";
 	})();
-	const title = isLooping() ? `drawing/ frameRate: ${frameRateWarning}<br>` : '...waiting/click canvas to start<br>';
+	const title = s.isLooping() ? `drawing/ frameRate: ${frameRateWarning}<br>` : '...waiting/click canvas to start<br>';
 	// data
 	const logList = [];
 	if (Array.isArray(arg)) {
@@ -149,20 +151,20 @@ const debug = (
  * get square size from widowWidth and windowHeight
  * @return {number} square size
 */
-const getSize = () => windowWidth > windowHeight ? windowHeight : windowWidth;
+export const getSize = s => s.windowWidth > s.windowHeight ? s.windowHeight : s.windowWidth;
 
 /**
  * draw frame
  * @param {number} window width
  * @param {number} window height
  */
-const drawFrame = (w, h) => {
-	push();
-	noFill();
-	strokeWeight(1);
-	stroke(0);
-	rect(0, 0, w, h);
-	pop();
+export const drawFrame = (s, size) => {
+	s.push();
+	s.noFill();
+	s.strokeWeight(1);
+	s.stroke(0);
+	s.rect(0, 0, size, size);
+	s.pop();
 }
 
 /**
@@ -170,11 +172,11 @@ const drawFrame = (w, h) => {
  * @param {*} func 
  * @param {*} pg 
  */
-function pp(func, pg = undefined) {
+export function pp(s, func, pg = undefined) {
 	if (pg === undefined) {
-		push();
+		s.push();
 		func();
-		pop();
+		s.pop();
 	} else {
 		pg.push();
 		func();
