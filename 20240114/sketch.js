@@ -36,14 +36,11 @@ function draw() {
 		// todo: consider reduceing angle from max
 		const spiral = {};
 		const maxRadius = size * 1 / 2
-		const maxAngle = isInit ? 1000 : 1000 * _spiral.rotate;
-		const isReset = isInit ? true : _spiral.angle > maxAngle;
-		spiral.progress = isInit ? 0 : 1 - (maxAngle - _spiral.angle) / maxAngle;
-		spiral.rotate = isReset ? random(0.005, 0.05) : _spiral.rotate; // todo find min/max
-		spiral.angle = (() => {
-			if (isReset) return 0;
-			return _spiral.angle + spiral.rotate;
-		})();
+		const isReset = isInit ? true : _spiral.progress > 1;
+		spiral.maxAngle = isReset ? random(100, 300) : _spiral.maxAngle;
+		spiral.progressRate = isReset ? random(0.0002, 0.002) : _spiral.progressRate; // todo find min/max
+		spiral.progress = isReset ? 0 : _spiral.progress + spiral.progressRate;
+		spiral.angle = spiral.maxAngle * pow(spiral.progress, 3);
 		spiral.a = (() => { // > 0
 			if (!isReset) return _spiral.a;
 			return maxRadius * random(0.01, 0.04); // todo find min/max
