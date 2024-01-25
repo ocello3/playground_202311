@@ -1,4 +1,4 @@
-// import {Pane} from '../lib/tweakpane-4.0.3.min.js';
+import {Pane} from '../lib/tweakpane-4.0.3.min.js';
 import * as u from '../util/util.js';
 import '../lib/p5.min.js';
 import '../lib/p5.sound.min.js';
@@ -12,11 +12,13 @@ const sketch = s => {
 		count: 10,
 		connectLimit: 0.13,
 	};
-	// const pane = new Pane();
-	// pane.addBinding(params, 'connectLimit', {
-	// 	min: 0.05,
-	// 	max: 0.2,
-	// });
+	const pane = new Pane({
+		container: document.getElementById('pane'),
+	});
+	pane.addBinding(params, 'connectLimit', {
+		min: 0.05,
+		max: 0.2,
+	});
 
 	s.setup =() => {
 		size = u.getSize(s);
