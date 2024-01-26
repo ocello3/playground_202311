@@ -1,5 +1,5 @@
 import {Pane} from '../lib/tweakpane-4.0.3.min.js';
-import * as u from '../util/util.js';
+import * as u from './util.js';
 import '../lib/p5.min.js';
 import '../lib/p5.sound.min.js';
 import * as e from './effect.js';
@@ -9,13 +9,36 @@ const sketch = s => {
 	let size, dt = {};
 	let snd = {};
 	let params = {
+		frameRate: 0,
 		count: 10,
 		connectLimit: 0.13,
 	};
-	const pane = new Pane({
-		container: document.getElementById('pane'),
+	const pane = new Pane();
+	const f = pane.addFolder({
+		title: 'pane',
 	});
-	pane.addBinding(params, 'connectLimit', {
+	f.addButton({
+		title: 'start/stop',
+		label: 'ctrl',
+	}).on('click', () => {
+		if (isInit) {
+			s.userStartAudio();
+			s.loop();
+			return;
+		} else if (s.isLooping()) {
+			s.outputVolume(0);
+			s.noLoop();
+			return;
+		} else {
+			s.loop();
+			s.outputVolume(1);
+		}
+	});
+	f.addBinding(params, 'frameRate', {
+		readonly: true,
+		interval: 500,
+	});
+	f.addBinding(params, 'connectLimit', {
 		min: 0.05,
 		max: 0.2,
 	});
@@ -37,8 +60,9 @@ const sketch = s => {
 			return fm;
 		})
 		// frameRate(10);
-		u.defalt(s);
+		// u.defalt(s);
 		s.noLoop();
+		s.outputVolume(0);
 	}
 
 	s.draw = () => {
@@ -127,6 +151,7 @@ const sketch = s => {
 		u.debug(s);
 		// reset status
 		if (isInit) isInit = false;
+		params.frameRate = s.isLooping() ? s.frameRate() : 0;
 	}
 }
 new p5(sketch);

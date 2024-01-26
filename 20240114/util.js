@@ -1,13 +1,13 @@
-export const defalt = s => {
-	s.mouseClicked = () => {
-		s.userStartAudio();
-		s.loop();
-	}
-	s.touchStarted = () => {
-		s.userStartAudio();
-		s.loop();
-	}
-}
+// export const defalt = s => {
+// 	s.mouseClicked = () => {
+// 		s.userStartAudio();
+// 		s.loop();
+// 	}
+// 	s.touchStarted = () => {
+// 		s.userStartAudio();
+// 		s.loop();
+// 	}
+// }
 
 // debug
 const isIndividualData = (arg) =>
@@ -123,13 +123,7 @@ export const debug = (
 	startPosition = 0
 ) => {
 	// header
-	const frameRateWarning = (() => {
-		if (s.frameRate() > 50) return "more than 50";
-		if (s.frameRate() > 40) return "less than 50";
-		if (s.frameRate() > 30) return "less than 40";
-		return "less than 30";
-	})();
-	const title = s.isLooping() ? `drawing/ frameRate: ${frameRateWarning}<br>` : '...waiting/click canvas to start<br>';
+	const title = ``;
 	// data
 	const logList = [];
 	if (Array.isArray(arg)) {
