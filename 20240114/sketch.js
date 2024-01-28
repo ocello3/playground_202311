@@ -1,8 +1,16 @@
-import {Pane} from './path/to/tweakpane-4.0.3.min.js';
+// import {Pane} from '../lib/tweakpane-4.0.3.min.js';
 let isInit = true;
 let size, dt = {};
 let snd = {};
-let params;
+let params = {
+	count: 10,
+	connectLimit: 0.13,
+};
+// const pane = new Pane();
+// pane.addBinding(params, 'connectLimit', {
+// 	min: 0.05,
+// 	max: 0.2,
+// });
 
 function preload() {
 }
@@ -10,10 +18,6 @@ function preload() {
 function setup() {
 	size = getSize();
 	createCanvas(size, size).parent('canvas');
-	params = {
-		count: 10,
-		connectLimit: size * 0.13,
-	}
 	snd.fms = [...Array(params.count)].map((_, i) => {
 		const fm = {};
 		fm.freq = 110 * i; // todo: change
@@ -84,14 +88,15 @@ function draw() {
 			dt.spirals.forEach((_spiral, _i) => {
 				if (i > _i) {
 					const length = p5.Vector.dist(spiral.head, _spiral.head);
-					if (length < params.connectLimit) {
+					const connectLimit = params.connectLimit * size;
+					if (length < connectLimit) {
 						const connection = {};
 						connection.id_1 = i;
 						connection.id_2 = _i;
 						connection.length = length;
 						connection.modFreq = snd.fms[_i].freq;
-						connection.modIndex = map(length, 0, params.connectLimit, 100, 10);
-						connection.amp = map(length, 0, params.connectLimit, 0.8 / params.count, 0.3 / params.count);
+						connection.modIndex = map(length, 0, connectLimit, 100, 10);
+						connection.amp = map(length, 0, connectLimit, 0.8 / params.count, 0.3 / params.count);
 						connections.push(connection);
 					}
 				}
