@@ -1,14 +1,3 @@
-// export const defalt = s => {
-// 	s.mouseClicked = () => {
-// 		s.userStartAudio();
-// 		s.loop();
-// 	}
-// 	s.touchStarted = () => {
-// 		s.userStartAudio();
-// 		s.loop();
-// 	}
-// }
-
 // debug
 const isIndividualData = (arg) =>
 	typeof arg === "string" ||

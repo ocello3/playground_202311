@@ -9,6 +9,8 @@ const sketch = s => {
 	let size, dt = {};
 	let snd = {};
 	let params = {
+		play: false,
+		vol: 1,
 		frameRate: 0,
 		count: 10,
 		connectLimit: 0.13,
@@ -17,28 +19,30 @@ const sketch = s => {
 	const f = pane.addFolder({
 		title: 'pane',
 	});
-	f.addButton({
-		title: 'start/stop',
-		label: 'ctrl',
-	}).on('click', () => {
-		if (isInit) {
+	f.addBinding(params, 'play').on('change', (isChecked) => {
+		if (isChecked.value) {
 			s.userStartAudio();
 			s.loop();
-			return;
-		} else if (s.isLooping()) {
-			s.outputVolume(0);
-			s.noLoop();
+			s.outputVolume(1, 0.1);
 			return;
 		} else {
-			s.loop();
-			s.outputVolume(1);
+			s.outputVolume(0, 0.1);
+			s.noLoop();
+			return;
 		}
 	});
+	f.addBinding(params, 'vol', {
+		min: 0,
+		max: 1,
+	}).on('change', (vol) => s.outputVolume(vol.value));
 	f.addBinding(params, 'frameRate', {
 		readonly: true,
 		interval: 500,
 	});
-	f.addBinding(params, 'connectLimit', {
+	const f1 = f.addFolder({
+		title: 'sketch',
+	});
+	f1.addBinding(params, 'connectLimit', {
 		min: 0.05,
 		max: 0.2,
 	});
