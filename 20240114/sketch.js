@@ -1,48 +1,26 @@
-import {Pane} from '../lib/tweakpane-4.0.3.min.js';
 import * as u from './util.js';
 import '../lib/p5.min.js';
 import '../lib/p5.sound.min.js';
 import * as e from './effect.js';
 
 const sketch = s => {
-	let isInit = true;
 	let size, dt = {};
 	let snd = {};
-	let params = {
+	let p = {
+		// default
+		isInit: true,
 		play: false,
-		vol: 1,
+		vol: 0,
 		frameRate: 0,
+		// sketch
 		count: 10,
 		connectLimit: 0.13,
 	};
-	const pane = new Pane();
-	const f = pane.addFolder({
-		title: 'pane',
-	});
-	f.addBinding(params, 'play').on('change', (isChecked) => {
-		if (isChecked.value) {
-			s.userStartAudio();
-			s.loop();
-			s.outputVolume(1, 0.1);
-			return;
-		} else {
-			s.outputVolume(0, 0.1);
-			s.noLoop();
-			return;
-		}
-	});
-	f.addBinding(params, 'vol', {
-		min: 0,
-		max: 1,
-	}).on('change', (vol) => s.outputVolume(vol.value));
-	f.addBinding(params, 'frameRate', {
-		readonly: true,
-		interval: 500,
-	});
+	const f = u.createPane(s, p);
 	const f1 = f.addFolder({
 		title: 'sketch',
 	});
-	f1.addBinding(params, 'connectLimit', {
+	f1.addBinding(p, 'connectLimit', {
 		min: 0.05,
 		max: 0.2,
 	});
@@ -50,7 +28,7 @@ const sketch = s => {
 	s.setup =() => {
 		size = u.getSize(s);
 		s.createCanvas(size, size).parent('canvas');
-		snd.fms = [...Array(params.count)].map((_, i) => {
+		snd.fms = [...Array(p.count)].map((_, i) => {
 			const fm = {};
 			fm.freq = 110 * i; // todo: change
 			fm.car = new p5.Oscillator('sine'); // todo: change to s.random
@@ -64,18 +42,17 @@ const sketch = s => {
 			return fm;
 		})
 		// frameRate(10);
-		// u.defalt(s);
 		s.noLoop();
 		s.outputVolume(0);
 	}
 
 	s.draw = () => {
-		const _spirals = isInit ? [...Array(params.count)] : dt.spirals;
+		const _spirals = p.isInit ? [...Array(p.count)] : dt.spirals;
 		dt.spirals = _spirals.map((_spiral, i) => {
 			// todo: consider reduceing angle from max
 			const spiral = {};
 			const maxRadius = size * 1 / 2
-			const isReset = isInit ? true : _spiral.progress > 1;
+			const isReset = p.isInit ? true : _spiral.progress > 1;
 			spiral.maxAngle = isReset ? s.random(100, 300) : _spiral.maxAngle;
 			spiral.progressRate = isReset ? s.random(0.0002, 0.002) : _spiral.progressRate; // todo find min/max
 			spiral.progress = isReset ? 0 : _spiral.progress + spiral.progressRate;
@@ -112,7 +89,7 @@ const sketch = s => {
 			})();
 			spiral.modFreq = 1500; // todo: change later
 			spiral.modIndex = s.map(s.constrain(spiral.head.y, 0, size), 0, size, 10, 100);
-			spiral.amp = s.map(s.constrain(spiral.head.y, 0, size), 0, size, 0, 0.1 / params.count);
+			spiral.amp = s.map(s.constrain(spiral.head.y, 0, size), 0, size, 0, 0.1 / p.count);
 			spiral.pan = s.map(s.constrain(spiral.head.x, 0, size), 0, size, -1, 1);
 			return spiral;
 		});
@@ -122,7 +99,7 @@ const sketch = s => {
 				dt.spirals.forEach((_spiral, _i) => {
 					if (i > _i) {
 						const length = p5.Vector.dist(spiral.head, _spiral.head);
-						const connectLimit = params.connectLimit * size;
+						const connectLimit = p.connectLimit * size;
 						if (length < connectLimit) {
 							const connection = {};
 							connection.id_1 = i;
@@ -130,7 +107,7 @@ const sketch = s => {
 							connection.length = length;
 							connection.modFreq = snd.fms[_i].freq;
 							connection.modIndex = s.map(length, 0, connectLimit, 100, 10);
-							connection.amp = s.map(length, 0, connectLimit, 0.8 / params.count, 0.3 / params.count);
+							connection.amp = s.map(length, 0, connectLimit, 0.8 / p.count, 0.3 / p.count);
 							connections.push(connection);
 						}
 					}
@@ -140,23 +117,22 @@ const sketch = s => {
 		})();
 		const sndIds = dt.connections.map(connection => connection.id_2);
 		dt.isUpdates = (() => {
-			if (isInit) return [...Array(params.count)].map(() => true);
+			if (p.isInit) return [...Array(p.count)].map(() => true);
 			return dt.isUpdates.map((_, i) => sndIds.includes(i));
 		})();
 		s.background(255);
 		s.noStroke();
-		for (let i = 0; i < params.count; i++) {
-			s.fill(216, 229, 240, 255 / params.count * i);
-			s.rect(0, size / params.count * i, size, size / params.count)
+		for (let i = 0; i < p.count; i++) {
+			s.fill(216, 229, 240, 255 / p.count * i);
+			s.rect(0, size / p.count * i, size, size / p.count)
 		}
 		e.drawSpirals(s, dt, snd, size);
 		u.drawFrame(s, size);
 		// debug
 		u.debug(s);
-		// reset status
-		if (isInit) isInit = false;
-		params.frameRate = s.isLooping() ? s.frameRate() : 0;
+		// reset params 
+		if (p.isInit) p.isInit = false;
+		p.frameRate = s.isLooping() ? s.frameRate() : 0;
 	}
 }
 new p5(sketch);
-// new p5(sketch, 'canvas');

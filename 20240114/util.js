@@ -1,3 +1,38 @@
+import {Pane} from '../lib/tweakpane-4.0.3.min.js';
+
+// create pane by tweakpane and return folder as 'f'
+export const createPane = (s, p) => {
+	const pane = new Pane();
+	const f = pane.addFolder({
+		title: 'pane',
+	});
+	f.addBinding(p, 'play').on('change', (isChecked) => {
+		if (isChecked.value) {
+			s.userStartAudio();
+			s.loop();
+			p.vol = 0.8;
+			s.outputVolume(p.vol, 0.1);
+			pane.refresh();
+			return;
+		} else {
+			p.vol = 0;
+			s.outputVolume(p.vol, 0.1);
+			s.noLoop();
+			pane.refresh();
+			return;
+		}
+	});
+	f.addBinding(p, 'vol', {
+		min: 0,
+		max: 1,
+	}).on('change', (vol) => s.outputVolume(vol.value));
+	f.addBinding(p, 'frameRate', {
+		readonly: true,
+		interval: 500,
+	});
+	return f;
+}
+
 // debug
 const isIndividualData = (arg) =>
 	typeof arg === "string" ||
