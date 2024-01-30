@@ -1,6 +1,6 @@
-import * as u from './util.js';
 import '../lib/p5.min.js';
 import '../lib/p5.sound.min.js';
+import * as u from './util.js';
 import * as e from './effect.js';
 
 const sketch = s => {
@@ -31,11 +31,11 @@ const sketch = s => {
 		snd.fms = [...Array(p.count)].map((_, i) => {
 			const fm = {};
 			fm.freq = 110 * i; // todo: change
-			fm.car = new p5.Oscillator('sine'); // todo: change to s.random
+			fm.car = new p5.Oscillator(s.random(['sawtooth', 'sine', 'square']));
 			fm.car.amp(0);
 			fm.car.freq(fm.freq);
 			fm.car.start();
-			fm.mod = new p5.Oscillator('sine'); // todo: change to s.random
+			fm.mod = new p5.Oscillator(s.random(['sawtooth', 'sine', 'square']));
 			fm.mod.disconnect();
 			fm.mod.start();
 			fm.car.freq(fm.mod);
@@ -49,7 +49,6 @@ const sketch = s => {
 	s.draw = () => {
 		const _spirals = p.isInit ? [...Array(p.count)] : dt.spirals;
 		dt.spirals = _spirals.map((_spiral, i) => {
-			// todo: consider reduceing angle from max
 			const spiral = {};
 			const maxRadius = size * 1 / 2
 			const isReset = p.isInit ? true : _spiral.progress > 1;
