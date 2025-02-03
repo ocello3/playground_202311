@@ -18,8 +18,8 @@ const sketch = s => {
 		title: 'sketch',
 	});
 	s.setup =() => {
+		s.createCanvas().parent('canvas');
 		size = u.getSize(s);
-		s.createCanvas(size, size).parent('canvas');
 		// frameRate(10);
 		s.noLoop();
 		s.outputVolume(0);
@@ -34,6 +34,9 @@ const sketch = s => {
 		// reset params 
 		if (p.isInit) p.isInit = false;
 		p.frameRate = s.isLooping() ? s.frameRate() : 0;
+	}
+	s.windowResized = () => {
+		size = u.getSize(s);
 	}
 }
 new p5(sketch);

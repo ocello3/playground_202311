@@ -1,14 +1,56 @@
-html, body {
-	margin: 0;
-	padding: 0;
-	font-size: 0.9em;
-	line-height: 1.4;
-	font-weight: 400;
-	font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Courier, monospace;
-	color: #222;
+html,
+body {
 	user-select: none;
 	-webkit-touch-callout: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
 }
-canvas {
+
+#container {
+	display: flex;
+	height: 100vh;
+	padding-top: 5%;
+}
+
+#left {
+	display: flex;
+	flex-direction: column;
+	width: 50vw;
+	height: 100vh;
+}
+
+#canvas {
+	width: 100%;
+	padding-left: 3%;
+	padding-right: 3%;
+	aspect-ratio: 1 / 1;
+}
+
+/* debugエリア */
+#debug {
+	width: 100%;
+	flex-grow: 1;
+	color: #222;
+}
+
+/* right (pane) */
+#pane {
+	width: 50vw;
+	height: 100vh;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	padding-left: 3%;
+	padding-right: 3%;
+	flex-direction: column;
+}
+
+/* tweakpane の UI のサイズ調整 */
+#pane .tp-dfwv {
+	width: 100%;
+	max-width: none;
+	flex-grow: 1;
+	align-self: stretch;
 	display: block;
 }

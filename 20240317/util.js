@@ -2,7 +2,9 @@ import {Pane} from '../lib/tweakpane-4.0.3.min.js';
 
 // create pane by tweakpane and return folder as 'f'
 export const createPane = (s, p) => {
-	const pane = new Pane();
+	const pane = new Pane({
+		container: document.getElementById('pane')
+	});
 	const f = pane.addFolder({
 		title: 'pane',
 	});
@@ -165,11 +167,19 @@ export const debug = (
 	document.getElementById("debug").innerHTML = title.concat(...logList);
 };
 
-/** 
- * get square size from widowWidth and windowHeight
- * @return {number} square size
-*/
-export const getSize = s => s.windowWidth > s.windowHeight ? s.windowHeight : s.windowWidth;
+/**
+ * get window size and resize
+ * @param {p5} p5 object
+ */
+export const getSize = (s) => {
+	const div = document.getElementById('canvas');
+	const width = div.clientWidth;
+	const height = div.clientHeight;
+	console.log(`width: ${width}, height: ${height}`)
+	const size = width > height ? height : width;
+	s.resizeCanvas(size, size);
+	return size;
+}
 
 /**
  * draw frame
