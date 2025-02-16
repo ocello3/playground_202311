@@ -18,40 +18,16 @@
 - リバーブ（Reverb）:
 	- 雨音は反響を伴うことが多いため、適度なリバーブを加えるとリアリティが増します。
 
-let noiseGen; // ノイズジェネレーター
-let filter;   // フィルター
-let reverb;   // リバーブ
-
 let rainDrops = []; // 雨粒の音リスト
 
 function setup() {
   createCanvas(400, 200);
-
-  // 白色ノイズを生成
-  noiseGen = new p5.Noise('white');
-  noiseGen.start();
-  noiseGen.amp(0.05); // 雨音全体のボリュームを設定
-
-  // ノイズにハイパスフィルターを適用
-  filter = new p5.HighPass();
-  noiseGen.disconnect();
-  noiseGen.connect(filter);
-  filter.freq(500); // 高周波を強調（雨らしいサウンド）
-
-  // リバーブを追加
-  reverb = new p5.Reverb();
-  filter.disconnect();
-  filter.connect(reverb);
-  reverb.set(3, 2); // リバーブタイムとディケイを設定
 
   // 雨粒音を定期的に生成
   setInterval(createRainDrop, 100);
 }
 
 function draw() {
-  background(220);
-  text('Rain Sound Simulation', 10, 20);
-
   // 雨粒を再生し続ける
   for (let i = rainDrops.length - 1; i >= 0; i--) {
     if (!rainDrops[i].isPlaying()) {
